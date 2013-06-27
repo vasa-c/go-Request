@@ -1,4 +1,5 @@
-go-Request
-==========
+# go\Request: PHP and data of request
 
-PHP and data of request (under construction)
+* PHP 5.3+
+* Version: under construction
+
