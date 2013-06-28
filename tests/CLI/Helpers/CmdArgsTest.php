@@ -59,4 +59,21 @@ class CmdArgsTest extends \PHPUnit_Framework_TestCase
             array('--opt=String with "quot"', '--opt="String with \"quot\""'),
         );
     }
+
+    /**
+     * @see testConvertSingleArgToCmdPart
+     * @covers go\Request\CLI\Helpers\CmdArgs::convertArgsToCmd
+     */
+    public function testConvertArgsToCmd()
+    {
+        $args = array(
+            './script.php',
+            '--name=My name',
+            '-abc',
+            'arg1',
+            'arg2',
+        );
+        $cmd = './script.php --name="My name" -abc arg1 arg2';
+        $this->assertEquals($cmd, CmdArgs::convertArgsToCmd($args));
+    }
 }

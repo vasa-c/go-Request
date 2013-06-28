@@ -23,6 +23,21 @@ class CmdArgs
     }
 
     /**
+     * Convert array of args to command line
+     *
+     * @param array $args
+     * @return string
+     */
+    public static function convertArgsToCmd(array $args)
+    {
+        $cmd = array();
+        foreach ($args as $arg) {
+            $cmd[] = self::convertSingleArgToCmdPart($arg);
+        }
+        return \implode(' ', $cmd);
+    }
+
+    /**
      * Convert component from args to part of command line
      *
      * @param string $arg
