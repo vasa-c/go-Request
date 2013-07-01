@@ -151,4 +151,41 @@ class ParamsTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals($expected, Params::getParamsForArgs($args, 'list'));
     }
+
+    /**
+     * @covers go\Request\CLI\Helpers\Params::convertParamsToArgs
+     */
+    public function testConvertParamsToArgs()
+    {
+        $params = array(
+            array(
+                'option' => false,
+                'value' => 'cmd',
+            ),
+            array(
+                'option' => true,
+                'short' => true,
+                'name' => 'a',
+                'value' => 'b',
+            ),
+            array(
+                'option' => true,
+                'short' => false,
+                'name' => 'opt',
+                'value' => true,
+            ),
+        );
+        $argsValue = array(
+            'cmd',
+            '-ab',
+            '--opt',
+        );
+        $argsEqual = array(
+            'cmd',
+            '-a=b',
+            '--opt',
+        );
+        $this->assertEquals($argsValue, Params::convertParamsToArgs($params, 'value'));
+        $this->assertEquals($argsEqual, Params::convertParamsToArgs($params, 'equal'));
+    }
 }

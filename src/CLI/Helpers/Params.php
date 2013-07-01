@@ -89,4 +89,40 @@ class Params
         }
         return $result;
     }
+
+    /**
+     * Convert parameters to arguments array
+     *
+     * @param array $params
+     * @param string $fshort [optional]
+     * @return array
+     */
+    public static function convertParamsToArgs(array $params, $fshort = null)
+    {
+        $args = array();
+        foreach ($params as $p) {
+            if ($p['option']) {
+                $name = $p['name'];
+                $value = $p['value'];
+                if ($p['short']) {
+                    switch ($fshort) {
+                        case null:
+                        case 'mixed':
+                        case 'list':
+                            $value = '';
+                            break;
+                        case 'equal':
+                            $value = '='.$value;
+                            break;
+                    }
+                    $args[] = '-'.$name.$value;
+                } else {
+                    $args[] = '--'.$name.(($value === true) ? '' : '='.$value);
+                }
+            } else {
+                $args[] = $p['value'];
+            }
+        }
+        return $args;
+    }
 }
