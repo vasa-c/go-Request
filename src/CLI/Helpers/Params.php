@@ -15,15 +15,15 @@ class Params
      *
      * @param string $opt
      *        option (without "-")
-     * @param string $f [optional]
+     * @param string $fshort [optional]
      *        format (by default "mixed")
      * @return array
      *         name => value
      */
-    public static function getBlockShortOptions($opt, $f = null)
+    public static function getBlockShortOptions($opt, $fshort = null)
     {
         $result = array();
-        switch ($f) {
+        switch ($fshort) {
             case null:
             case 'mixed':
                 $result[$opt] = true;
@@ -43,6 +43,49 @@ class Params
                 break;
             default:
                 throw new \InvalidArgumentException('Invalid short option format "'.$f.'"');
+        }
+        return $result;
+    }
+
+    /**
+     * Get params of arguments
+     *
+     * @param array $args
+     *        array of arguments
+     * @param string $fshort [optional]
+     *        format short options
+     * @return array
+     *         array of params
+     */
+    public static function getParamsForArgs(array $args, $fshort = null)
+    {
+        $result = array();
+        foreach ($args as $arg) {
+            if (\preg_match('~^(-{1,2})(.+)$~s', $arg, $matches)) {
+                if ($matches[1] == '-') {
+                    foreach (self::getBlockShortOptions($matches[2], $fshort) as $k => $v) {
+                        $result[] = array(
+                            'option' => true,
+                            'short' => true,
+                            'name' => $k,
+                            'value' => $v,
+                        );
+                    }
+                } else {
+                    $arg = \explode('=', $matches[2], 2);
+                    $result[] = array(
+                        'option' => true,
+                        'short' => false,
+                        'name' => $arg[0],
+                        'value' => isset($arg[1]) ? $arg[1] : true,
+                    );
+                }
+            } else {
+                $result[] = array(
+                    'option' => false,
+                    'value' => $arg,
+                );
+            }
         }
         return $result;
     }

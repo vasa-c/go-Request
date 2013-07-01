@@ -98,4 +98,57 @@ class ParamsTest extends \PHPUnit_Framework_TestCase
             ),
         );
     }
+
+    /**
+     * @covers go\Request\CLI\Helpers\Params::getParamsForArgs
+     */
+    public function testGetParamsForArgs()
+    {
+        $args = array(
+            './script.php',
+            '-abc',
+            '--opt=value',
+            'arg1',
+            'arg2',
+        );
+        $expected = array(
+            array(
+                'option' => false,
+                'value' => './script.php',
+            ),
+            array(
+                'option' => true,
+                'short' => true,
+                'name' => 'a',
+                'value' => true,
+            ),
+            array(
+                'option' => true,
+                'short' => true,
+                'name' => 'b',
+                'value' => true,
+            ),
+            array(
+                'option' => true,
+                'short' => true,
+                'name' => 'c',
+                'value' => true,
+            ),
+            array(
+                'option' => true,
+                'short' => false,
+                'name' => 'opt',
+                'value' => 'value',
+            ),
+            array(
+                'option' => false,
+                'value' => 'arg1',
+            ),
+            array(
+                'option' => false,
+                'value' => 'arg2',
+            ),
+        );
+        $this->assertEquals($expected, Params::getParamsForArgs($args, 'list'));
+    }
 }
