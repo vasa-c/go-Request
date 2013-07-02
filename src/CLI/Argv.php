@@ -104,7 +104,7 @@ class Argv
         if (\is_null($this->args)) {
             if (!\is_null($this->cmd)) {
                 $this->args = CmdArgs::convertCmdToArgs($this->cmd);
-            } elseif (!\is_null($this->params[$this->fshort])) {
+            } elseif (isset($this->params[$this->fshort])) {
                 $this->args = Params::convertParamsToArgs($this->params[$this->fshort], $this->fshort);
             } else {
                 $this->args = array();
