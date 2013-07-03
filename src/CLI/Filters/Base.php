@@ -41,6 +41,7 @@ abstract class Base implements IFilter
     final public function filter($value)
     {
         $this->value = $value;
+        $this->process();
         return $this->value;
     }
 
@@ -79,4 +80,3 @@ abstract class Base implements IFilter
      */
     protected $value;
 }
-
