@@ -23,21 +23,36 @@ class FiltersTest extends \PHPUnit_Framework_TestCase
     {
         $f = new Mock('qwerty');
 
-        $filter = Filters::createFilter('opt', $f);
+        $filter = Filters::createFilter($f, 'opt');
         $this->assertSame($f, $filter);
         $this->assertEquals('qwerty', $filter->getOption());
 
         $f = '\go\Tests\Request\CLI\Filters\Mock';
-        $filter = Filters::createFilter('opt', $f);
+        $filter = Filters::createFilter($f, 'opt');
         $this->assertInstanceOf('\go\Tests\Request\CLI\Filters\Mock', $filter);
         $this->assertEquals('opt', $filter->getOption());
         $this->assertEquals(array(), $filter->getParams());
 
         $params = array('value' => 5);
         $f = array('\go\Tests\Request\CLI\Filters\Mock', $params);
-        $filter = Filters::createFilter('opt2', $f);
+        $filter = Filters::createFilter($f, 'opt2');
         $this->assertInstanceOf('\go\Tests\Request\CLI\Filters\Mock', $filter);
         $this->assertEquals('opt2', $filter->getOption());
         $this->assertEquals(array('value' => 5), $filter->getParams());
+    }
+
+    /**
+     * @covers go\Request\CLI\Filters\Filters::runChainFilters
+     */
+    public function testRunChainFilters()
+    {
+        $params = array(
+            array('\go\Tests\Request\CLI\Filters\Mock', array('valid' => true)),
+            array('\go\Tests\Request\CLI\Filters\Mock', array('value' => 5, 'new' => 4)),
+            array('\go\Tests\Request\CLI\Filters\Mock', array('value' => 4, 'new' => 3)),
+        );
+        $this->assertEquals(3, Filters::runChainFilters($params, 'opt', 5));
+        $this->setExpectedException('go\Request\CLI\Filters\Error', 'Invalid value for opt');
+        Filters::runChainFilters($params, 'opt', 4);
     }
 }

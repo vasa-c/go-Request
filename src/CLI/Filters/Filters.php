@@ -13,11 +13,11 @@ class Filters
     /**
      * Create filter for option by parameters
      *
-     * @param string $option
      * @param mixed $filter
+     * @param string $option
      * @return \go\Request\CLI\Filters\IFilter
      */
-    public static function createFilter($option, $filter)
+    public static function createFilter($filter, $option)
     {
         if (!\is_object($filter)) {
             if (\is_array($filter)) {
@@ -33,5 +33,27 @@ class Filters
             $filter = new $classname($option, $params);
         }
         return $filter;
+    }
+
+    /**
+     * Run chain filters for option value
+     *
+     * @throws \go\Request\CLI\Filters\Error
+     *         invalid option value
+     * @param array $params
+     *        list filters params
+     * @param string $option
+     *        option name
+     * @param mixed $value
+     *        initial option value
+     * @return mixed
+     *         result option value
+     */
+    public static function runChainFilters(array $params, $option, $value)
+    {
+        foreach ($params as $p) {
+            $value = self::createFilter($p, $option)->filter($value);
+        }
+        return $value;
     }
 }
