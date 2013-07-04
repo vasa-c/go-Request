@@ -62,12 +62,4 @@ class BaseTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals(5, $e->getValue());
         }
     }
-
-    /**
-     * @covers go\Request\CLI\Filters\Base::process
-     */
-    public function testValue()
-    {
-
-    }
 }

@@ -6,7 +6,7 @@ class Mock extends \go\Request\CLI\Filters\Base
 {
     protected $errorMessage = 'Option {{ option }} is not valid';
 
-    public function process()
+    protected function process()
     {
         if (empty($this->params['valid'])) {
             if (!isset($this->params['value'])) {

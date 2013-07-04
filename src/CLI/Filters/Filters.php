@@ -28,7 +28,13 @@ class Filters
                 $params = array();
             }
             if (\strpos($classname, '\\') !== 0) {
+                if ($classname == 'Switch') {
+                    $classname = 'CSwitch'; // hack: switch is keyword
+                }
                 $classname = __NAMESPACE__.'\\'.$classname;
+            }
+            if (!\class_exists($classname, true)) {
+                throw new \InvalidArgumentException('Class '.$classname.' is not found');
             }
             $filter = new $classname($option, $params);
         }

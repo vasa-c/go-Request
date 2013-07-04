@@ -50,7 +50,7 @@ abstract class Base implements IFilter
      *
      * @throws \go\Request\CLI\Filters\Error
      */
-    abstract public function process();
+    abstract protected function process();
 
     /**
      * Filtering error
