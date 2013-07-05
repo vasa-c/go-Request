@@ -16,7 +16,6 @@ use go\Request\CLI\Argv;
  */
 class ArgvTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @covers go\Request\CLI\Argv
      */
