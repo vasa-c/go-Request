@@ -91,7 +91,7 @@ class OptionsTest extends \PHPUnit_Framework_TestCase
         $expected = array(
             'one' => 'value',
             'two' => true,
-            'three' => 'deftree',
+            'three' => 'defthree',
         );
         $options = $this->create($cmd, $format);
         $this->assertEquals($expected, $options->getOptions());
@@ -127,7 +127,7 @@ class OptionsTest extends \PHPUnit_Framework_TestCase
         $expectedErrors = array(
             'one' => 'Required option --one is not found',
         );
-        $this->assertEquals($expectedErrord, $options->getErrorOptions());
+        $this->assertEquals($expectedErrors, $options->getErrorOptions());
         $expectedLoaded = array(
             'two' => true,
         );
@@ -149,7 +149,7 @@ class OptionsTest extends \PHPUnit_Framework_TestCase
             't' => 'Option --t is unknown',
             'a' => 'Option --a is unknown',
         );
-        $this->assertEquals($expectedErrord, $options->getErrorOptions());
+        $this->assertEquals($expectedErrors, $options->getErrorOptions());
         $expectedLoaded = array(
             'one' => null,
         );
@@ -177,16 +177,109 @@ class OptionsTest extends \PHPUnit_Framework_TestCase
 
     public function testFilter()
     {
+        $format = array(
+            'options' => array(
+                'one' => array(
+                    'filter' => 'Switch',
+                ),
+                'two' => array(
+                    'filter' => 'Value',
+                ),
+            ),
+        );
+        $cmd = '--one=Off --two=value';
+        $options = $this->create($cmd, $format);
+        $this->assertTrue($options->isSuccess());
+        $expected = array(
+            'one' => false,
+            'two' => 'value',
+        );
+        $this->assertEquals($expected, $options->getOptions());
 
+        $cmd = '--one=value --two';
+        $options = $this->create($cmd, $format);
+        $this->assertFalse($options->isSuccess());
+        $expectedErrors = array(
+            'one' => 'Option --one is switch (value only on/off)',
+            'two' => 'It requires value for --two',
+        );
+        $this->assertEquals($expectedErrors, $options->getErrorOptions());
     }
 
     public function testFilters()
     {
+        $format = array(
+            'options' => array(
+                'one' => array(
+                    'filters' => array('Switch', 'Flag'),
+                ),
+            ),
+        );
 
+        $cmd = '--one=On';
+        $options = $this->create($cmd, $format);
+        $this->assertTrue($options->isSuccess());
+        $expected = array(
+            'one' => true,
+        );
+        $this->assertEquals($expected, $options->getOptions());
+
+        $cmd = '--one=Off';
+        $options = $this->create($cmd, $format);
+        $this->assertFalse($options->isSuccess());
+        $expectedErrors = array(
+            'one' => 'Option --one is flag (cannot take value)',
+        );
+        $this->assertEquals($expectedErrors, $options->getErrorOptions());
+
+        $cmd = '--one=qwerty';
+        $options = $this->create($cmd, $format);
+        $this->assertFalse($options->isSuccess());
+        $expectedErrors = array(
+            'one' => 'Option --one is switch (value only on/off)',
+        );
+        $this->assertEquals($expectedErrors, $options->getErrorOptions());
     }
 
     public function testErrors()
     {
+        $format = array(
+            'options' => array(
+                'one' => array(
+                    'filter' => 'Flag',
+                ),
+                'two' => array(
+                    'required' => true,
+                ),
+            ),
+        );
+        $cmd = '--one=qwerty';
+        $options = $this->create($cmd, $format);
+        $errors = array();
+        foreach ($options->getErrorObjects() as $e) {
+            $errors[$e->getOption()] = array($e->getValue(), $e->getMessage());
+        }
+        $expected = array(
+            'one' => array('qwerty', 'Option --one is flag (cannot take value)'),
+            'two' => array(null, 'Required option --two is not found'),
+        );
+        $this->assertEquals($expected, $errors);
+    }
 
+    public function testMagicGet()
+    {
+        $format = array(
+            'options' => array(
+                'one' => true,
+                'two' => true,
+            ),
+            'allow_unknown' => true,
+        );
+        $cmd = '--one=qwe --three';
+        $options = $this->create($cmd, $format);
+        $this->assertSame('qwe', $options->one);
+        $this->assertSame(null, $options->two);
+        $this->assertSame(true, $options->three);
+        $this->assertSame(null, $options->four);
     }
 }
