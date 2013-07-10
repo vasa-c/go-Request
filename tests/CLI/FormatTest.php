@@ -77,6 +77,37 @@ class FormatTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers go\Request\CLI\Format::loadOptions
+     */
+    public function testLoadOptions()
+    {
+        $options = array(
+            'short' => array(
+                't' => true,
+            ),
+            'long' => array(
+                'one' => 'value',
+            ),
+        );
+        $format = array(
+            'options' => array(
+                'one' => true,
+                'two' => array(
+                    'short' => 't',
+                ),
+            ),
+        );
+        $format = new Format($format);
+        $options = $format->loadOptions($options);
+        $this->assertInstanceOf('go\Request\CLI\Options', $options);
+        $expected = array(
+            'one' => 'value',
+            'two' => true,
+        );
+        $this->assertEquals($expected, $options->getOptions());
+    }
+
+    /**
      * @covers go\Request\CLI\Format::getHelp
      */
     public function testGetHelp()

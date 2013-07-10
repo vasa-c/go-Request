@@ -31,22 +31,15 @@ class Format
     }
 
     /**
-     * Normalize config (default values)
+     * Load options by format
      *
-     * @param array $config
-     * @return array
+     * @param array $options
+     *        ['short'=>[], 'long'=>[]]
+     * @return \go\Request\CLI\Options
      */
-    public static function normalizeConfig(array $config)
+    public function loadOptions(array $options)
     {
-        $config = \array_merge(self::$defaultConfig, $config);
-        foreach ($config['options'] as &$v) {
-            if ($v === true) {
-                $v = self::$defaultOption;
-            } else {
-                $v = \array_merge(self::$defaultOption, $v);
-            }
-        }
-        return $config;
+        return new Options($options, $this->config);
     }
 
     /**
@@ -94,6 +87,25 @@ class Format
             }
         }
         return \implode($sep, $help).$sep;
+    }
+
+    /**
+     * Normalize config (default values)
+     *
+     * @param array $config
+     * @return array
+     */
+    public static function normalizeConfig(array $config)
+    {
+        $config = \array_merge(self::$defaultConfig, $config);
+        foreach ($config['options'] as &$v) {
+            if ($v === true) {
+                $v = self::$defaultOption;
+            } else {
+                $v = \array_merge(self::$defaultOption, $v);
+            }
+        }
+        return $config;
     }
 
     /**
