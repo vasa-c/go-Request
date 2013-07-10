@@ -50,6 +50,53 @@ class Format
     }
 
     /**
+     * Get help message
+     *
+     * @param string $sep
+     * @return string
+     */
+    public function getHelp($sep = \PHP_EOL)
+    {
+        $help = array();
+        $config = $this->config;
+        if ($config['title']) {
+            $help[] = $config['title'];
+        }
+        if ($config['version']) {
+            $help[] = 'Version: '.$config['version'];
+        }
+        if ($config['copyright']) {
+            $help[] = 'Copyright: '.$config['copyright'];
+        }
+        if ($config['usage']) {
+            $help[] = 'Usage: '.$config['usage'];
+        }
+        $options = $config['options'];
+        if (!empty($options)) {
+            $help[] = '';
+            $help[] = 'Options:';
+            $opt = array();
+            $max = 0;
+            foreach ($options as $name => $params) {
+                $l = '--'.$name;
+                if ($params['short']) {
+                    $l .= ', -'.$params['short'];
+                }
+                $len = \strlen($l);
+                if ($len > $max) {
+                    $max = $len;
+                }
+                $opt[] = array($l, $len, $params['title']);
+            }
+            $max += 2;
+            foreach ($opt as $o) {
+                $help[] = ' '.$o[0].\str_repeat(' ', $max - $o[1]).$o[2];
+            }
+        }
+        return \implode($sep, $help).$sep;
+    }
+
+    /**
      * @var array
      */
     private static $defaultConfig = array(

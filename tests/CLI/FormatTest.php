@@ -75,4 +75,29 @@ class FormatTest extends \PHPUnit_Framework_TestCase
         $format = new Format($config);
         $this->assertEquals($expected, $format->getConfig());
     }
+
+    /**
+     * @covers go\Request\CLI\Format::getHelp
+     */
+    public function testGetHelp()
+    {
+        $config = array(
+            'title' => 'Test cmd',
+            'version' => '0.1',
+            'copyright' => 'go',
+            'usage' => 'cmd [options] arguments',
+            'options' => array(
+                'one' => array(
+                    'title' => 'One option',
+                ),
+                'two' => array(
+                    'title' => 'Two option',
+                    'short' => 't',
+                ),
+            ),
+        );
+        $format = new Format($config);
+        $expected = \file_get_contents(__DIR__.'/help.txt');
+        $this->assertEquals(\trim($expected), \trim($format->getHelp("\n")));
+    }
 }

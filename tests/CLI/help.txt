@@ -1,0 +1,9 @@
+Test cmd
+Version: 0.1
+Copyright: go
+Usage: cmd [options] arguments
+
+Options:
+ --one      One option
+ --two, -t  Two option
+ 
