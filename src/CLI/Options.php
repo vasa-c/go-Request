@@ -18,10 +18,10 @@ class Options
      *
      * @param array $input
      *        options in format array('short'=>array(), 'long'=>array())
-     * @param array $format
+     * @param array $format [optional]
      *        normalized format config
      */
-    public function __construct(array $input, array $format)
+    public function __construct(array $input, array $format = null)
     {
         $this->input = $input;
         $this->format = $format;
@@ -115,6 +115,12 @@ class Options
      */
     private function process()
     {
+        if (!$this->format) {
+            $this->options = \array_merge($this->input['long'], $this->input['short']);
+            $this->loaded = $this->options;
+            $this->unknown = $this->options;
+            return true;
+        }
         foreach ($this->format['options'] as $name => $params) {
             $this->processOptions($name, $params);
         }

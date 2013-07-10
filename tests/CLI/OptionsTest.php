@@ -282,4 +282,29 @@ class OptionsTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(true, $options->three);
         $this->assertSame(null, $options->four);
     }
+
+    public function testFormatNull()
+    {
+        $options = array(
+            'long' => array(
+                'one' => 1,
+                'two' => 2,
+            ),
+            'short' => array(
+                't' => 3,
+                'f' => 4,
+            ),
+        );
+        $options = new Options($options, null);
+        $this->assertTrue($options->isSuccess());
+        $expected = array(
+            'one' => 1,
+            'two' => 2,
+            't' => 3,
+            'f' => 4,
+        );
+        $this->assertEquals($expected, $options->getOptions());
+        $this->assertEquals($expected, $options->getLoadedOptions());
+        $this->assertEquals($expected, $options->getUnknownOptions());
+    }
 }
