@@ -21,6 +21,9 @@ class Number extends Base
 
     protected function process()
     {
+        if ($this->value === null) {
+            $this->value = 0;
+        }
         $params = \array_merge($this->defaults, $this->params);
         if (!\preg_match('~^([-+]?)([0-9]+)(\.[0-9]+)?$~', $this->value, $matches)) {
             $this->error();

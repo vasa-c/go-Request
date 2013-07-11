@@ -29,10 +29,15 @@ class CSwitch extends Base
 
     protected function process()
     {
+        if ($this->value === null) {
+            $this->value = false;
+            return true;
+        }
         $value = \strtolower($this->value);
         if (!isset($this->switches[$value])) {
             return $this->error();
         }
         $this->value = $this->switches[$value];
+        return true;
     }
 }

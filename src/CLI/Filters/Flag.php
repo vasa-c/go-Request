@@ -14,7 +14,9 @@ class Flag extends Base
 
     protected function process()
     {
-        if ($this->value !== true) {
+        if ($this->value === null) {
+            $this->value = false;
+        } elseif ($this->value !== true) {
             return $this->error();
         }
         return true;

@@ -14,7 +14,9 @@ class Value extends Base
 
     protected function process()
     {
-        if (\is_bool($this->value)) {
+        if ($this->value === null) {
+            $this->value = '';
+        } elseif (\is_bool($this->value)) {
             $this->error();
         }
         return true;

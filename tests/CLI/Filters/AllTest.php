@@ -141,6 +141,32 @@ class AllTest extends \PHPUnit_Framework_TestCase
                 null,
                 '--opt must be between 5 and 10',
             ),
+            array(
+                'Flag',
+                null,
+                false,
+            ),
+            array(
+                'Switch',
+                null,
+                false,
+            ),
+            array(
+                'Value',
+                null,
+                '',
+            ),
+            array(
+                'Number',
+                null,
+                0,
+            ),
+            array(
+                array('Number', array('min' => 5, 'max' => 10)),
+                null,
+                null,
+                '--opt must be between 5 and 10',
+            ),
         );
     }
 }
