@@ -154,15 +154,19 @@ class Options
             $value = $svalue;
         }
         $load = true;
+        $usedef = false;
         if (\is_null($value)) {
             if ($params['required']) {
                 $this->errors[] = new Error('Required option --'.$name.' is not found', $name, null);
                 $load = false;
             } else {
                 $value = $params['default'];
+                if ($value !== null) {
+                    $usedef = true;
+                }
             }
         }
-        if ($load) {
+        if ($load && (!$usedef)) {
             if ($params['filter']) {
                 $filters = array($params['filter']);
             } elseif ($params['filters']) {
@@ -178,10 +182,10 @@ class Options
                     $this->errors[] = $e;
                 }
             }
-            if ($load) {
-                $this->options[$name] = $value;
-                $this->loaded[$name] = $value;
-            }
+        }
+        if ($load) {
+            $this->options[$name] = $value;
+            $this->loaded[$name] = $value;
         }
     }
 
