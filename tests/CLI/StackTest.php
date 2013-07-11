@@ -60,12 +60,13 @@ class StackTest extends \PHPUnit_Framework_TestCase
                     'filter' => 'Switch',
                 ),
             ),
-            'short_parse' => 'value',
+            'short_parsing' => 'value',
         );
         $options = $stack->getNextOptions($format);
         $this->assertTrue($options->isSuccess());
         $expected = array(
             'trans' => true,
+            'drop' => null,
         );
         $this->assertEquals($expected, $options->getOptions());
 
