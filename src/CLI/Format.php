@@ -86,6 +86,9 @@ class Format
                 $help[] = ' '.$o[0].\str_repeat(' ', $max - $o[1]).$o[2];
             }
         }
+        if ($sep === null) {
+            return $help;
+        }
         return \implode($sep, $help).$sep;
     }
 
