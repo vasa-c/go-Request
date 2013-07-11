@@ -1,5 +1,7 @@
 <?php
 /**
+ * Run task and subtasks from console
+ *
  * @package go\Request
  * @author Grigoriev Oleg aka vasa_c <go.vasac@gmail.com>
  */
