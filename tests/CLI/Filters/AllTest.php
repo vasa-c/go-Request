@@ -167,6 +167,12 @@ class AllTest extends \PHPUnit_Framework_TestCase
                 null,
                 '--opt must be between 5 and 10',
             ),
+            array(
+                array('Number', array('value' => true)),
+                null,
+                null,
+                'It requires value for --opt',
+            ),
         );
     }
 }

@@ -17,14 +17,18 @@ class Number extends Base
         'float' => false,
         'min' => null,
         'max' => null,
+        'value' => false,
     );
 
     protected function process()
     {
+        $params = \array_merge($this->defaults, $this->params);
         if ($this->value === null) {
+            if ($params['value']) {
+                return $this->error('It requires value for --{{ option }}');
+            }
             $this->value = 0;
         }
-        $params = \array_merge($this->defaults, $this->params);
         if (!\preg_match('~^([-+]?)([0-9]+)(\.[0-9]+)?$~', $this->value, $matches)) {
             $this->error();
         }
@@ -32,18 +36,18 @@ class Number extends Base
             $this->value = (float)$this->value;
         } else {
             if (!empty($matches[3])) {
-                $this->error('--{{ option }} must be integer');
+                return $this->error('--{{ option }} must be integer');
             }
             $this->value = (int)$this->value;
         }
         if (($this->value < 0) && (!$params['signed'])) {
-            $this->error('--{{ option }} must be positive number');
+            return $this->error('--{{ option }} must be positive number');
         }
         if (isset($params['min']) && ($this->value < $params['min'])) {
-            $this->rangeError($params);
+            return $this->rangeError($params);
         }
         if (isset($params['max']) && ($this->value > $params['max'])) {
-            $this->rangeError($params);
+            return $this->rangeError($params);
         }
         return true;
     }
