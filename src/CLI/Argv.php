@@ -188,6 +188,16 @@ class Argv
     }
 
     /**
+     * Get stack arguments
+     *
+     * @return \go\Request\CLI\Stack
+     */
+    public function getStack()
+    {
+        return Stack::createFromArray($this->getArgsArray());
+    }
+
+    /**
      * @var array
      */
     private static $systems = array();

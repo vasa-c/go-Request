@@ -150,4 +150,20 @@ class ArgvTest extends \PHPUnit_Framework_TestCase
         $instance5 = Argv::createFromParams($paramsByValue, 'equal');
         $this->assertEquals($cmdEqual, $instance5->getCommandLine());
     }
+
+    /**
+     * @covers go\Request\Argv::getStack
+     */
+    public function testGetStack()
+    {
+        $cmd = 'cmd --opt1=1 --opt2=2 arg1 arg2';
+        $argv = Argv::createFromString($cmd);
+        $stack1 = $argv->getStack();
+        $expected = array('cmd', 'arg1', 'arg2');
+        $this->assertEquals($expected, $stack1->getAllArguments());
+        $this->assertEmpty($stack1->getAllArguments());
+        $stack2 = $argv->getStack();
+        $this->assertNotSame($stack1, $stack2);
+        $this->assertEquals($expected, $stack2->getAllArguments());
+    }
 }
