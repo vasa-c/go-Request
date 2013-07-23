@@ -7,7 +7,7 @@
  * @author Grigoriev Oleg aka vasa_c <go.vasac@gmail.com>
  */
 
-namespace go\Tests\Request\CLI;
+namespace go\Tests\Request\HTTP\Helpers;
 
 use go\Request\HTTP\Helpers\Validator;
 
