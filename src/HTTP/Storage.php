@@ -49,7 +49,9 @@ class Storage
      * @param boolean $ex [optional]
      *        is variable executable?
      * @return boolean
+     *         TRUE - var is exists
      * @throws \InvalidArgumentException
+     *         type is invalid
      */
     public function exists($name, $type = null, $ex = null)
     {
@@ -57,17 +59,22 @@ class Storage
             return false;
         }
         $value = $this->vars[$name];
+        $this->last = $value;
         switch ($type) {
             case null:
             case 'scalar':
                 return \is_scalar($value);
             case 'float':
+                $this->last = (float)$value;
                 return Validator::isFloat($value);
             case 'int':
+                $this->last = (int)$value;
                 return Validator::isInt($value);
             case 'uint':
+                $this->last = (int)$value;
                 return Validator::isUInt($value);
             case 'id':
+                $this->last = (int)$value;
                 return Validator::isId($value);
             case 'list':
                 return Validator::isListOfScalar($value);
@@ -79,6 +86,33 @@ class Storage
                 return true;
         }
         throw new \InvalidArgumentException(__CLASS__.': type "'.$type.'" is invalid');
+    }
+
+    /**
+     * Get value of variable
+     *
+     * @param string $name
+     *        name of var
+     * @param string $type [optional]
+     *        type of var
+     * @param mixed $default [optional]
+     *        default value
+     * @param boolean $ex [optional]
+     *        executable var
+     * @return mixed
+     *         value or default
+     * @throws \InvalidArgumentException
+     *         type is invalid
+     */
+    public function get($name, $type = null, $default = null, $ex = null)
+    {
+        if ($type === 'check') {
+            return isset($this->vars[$name]);
+        }
+        if (!$this->exists($name, $type, $ex)) {
+            return $default;
+        }
+        return $this->last;
     }
 
     /**
@@ -101,4 +135,11 @@ class Storage
      * @var boolean
      */
     private $trust;
+
+    /**
+     * Last value
+     *
+     * @var mixed
+     */
+    private $last;
 }

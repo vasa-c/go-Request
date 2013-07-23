@@ -131,4 +131,30 @@ class StorageTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('InvalidArgumentException');
         $storage->exists('empty', 'invalid');
     }
+
+    /**
+     * @covers go\Request\HTTP\Storage::get
+     */
+    public function testGet()
+    {
+        $storage = new Storage($this->vars);
+
+        $this->assertSame('-123', $storage->get('int', 'scalar'));
+        $this->assertSame(-123, $storage->get('int', 'int'));
+        $this->assertSame(-123, $storage->get('int', 'int', 11));
+        $this->assertSame(null, $storage->get('int', 'uint'));
+        $this->assertSame(11, $storage->get('int', 'uint', 11));
+
+        $this->assertSame(array('1', '2', '3'), $storage->get('list', 'list'));
+        $this->assertSame(null, $storage->get('dict', 'list'));
+
+        $this->assertSame('', $storage->get('empty'));
+        $this->assertSame(true, $storage->get('empty', 'check'));
+        $this->assertSame(false, $storage->get('unk', 'check'));
+        $this->assertSame(null, $storage->get('unk'));
+        $this->assertSame('unkdef', $storage->get('unk', null, 'unkdef'));
+
+        $this->setExpectedException('InvalidArgumentException');
+        $storage->get('int', 'invalid');
+    }
 }
