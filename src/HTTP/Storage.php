@@ -116,6 +116,43 @@ class Storage
     }
 
     /**
+     * Get child storage
+     *
+     * @param string $name
+     *        name of variable
+     * @param boolean $throw [optional]
+     *        throw exception if not exists
+     * @return \go\Request\HTTP\Storage
+     *         child object or NULL if not exists
+     * @throws \InvalidArgumentException
+     *         var is not exists
+     */
+    public function child($name, $throw = false)
+    {
+        if (isset($this->childs[$name])) {
+            return $this->childs[$name];
+        }
+        if (!isset($this->vars[$name])) {
+            if ($throw) {
+                throw new \InvalidArgumentException('Storage->'.$name.' is not exist');
+            } else {
+                return null;
+            }
+        }
+        $vars = $this->vars[$name];
+        if (!\is_array($vars)) {
+            if ($throw) {
+                throw new \InvalidArgumentException('Storage->'.$name.' is not array');
+            } else {
+                return null;
+            }
+        }
+        $child = new self($vars, $this->ex, $this->trust);
+        $this->childs[$name] = $child;
+        return $child;
+    }
+
+    /**
      * Variables
      *
      * @var array
@@ -142,4 +179,11 @@ class Storage
      * @var mixed
      */
     private $last;
+
+    /**
+     * Cache of childs
+     *
+     * @var array
+     */
+    private $childs = array();
 }

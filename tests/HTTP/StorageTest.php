@@ -157,4 +157,24 @@ class StorageTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('InvalidArgumentException');
         $storage->get('int', 'invalid');
     }
+
+    /**
+     * @covers go\Request\HTTP\Storage::get
+     */
+    public function testChild()
+    {
+        $storage = new Storage($this->vars);
+
+        $this->assertNull($storage->child('int'));
+        $this->assertNull($storage->child('unk'));
+
+        $child = $storage->child('dict-tree');
+        $this->assertInstanceOf('go\Request\HTTP\Storage', $child);
+        $this->assertSame(1, $child->get('x', 'int'));
+
+        $this->assertSame($child, $storage->child('dict-tree', true));
+
+        $this->setExpectedException('InvalidArgumentException');
+        $storage->child('int', true);
+    }
 }
