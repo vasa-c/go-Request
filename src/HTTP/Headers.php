@@ -14,6 +14,8 @@ namespace go\Request\HTTP;
  * @property-read string $accept_language
  * @property-read string $cache_control
  * @property-read string $connection
+ * @property-read string $content-type
+ * @property-read string $content-length
  * @property-read string $cookie
  * @property-read string $host
  * @property-read string $user_agent

@@ -27,6 +27,12 @@ class Server
                 $headers[$k] = $v;
             }
         }
+        if (!empty($server['CONTENT_TYPE'])) {
+            $headers['content-type'] = $server['CONTENT_TYPE'];
+        }
+        if (!empty($server['CONTENT_LENGTH'])) {
+            $headers['content-length'] = $server['CONTENT_LENGTH'];
+        }
         return $headers;
     }
 }

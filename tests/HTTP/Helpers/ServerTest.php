@@ -32,6 +32,8 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             'HTTP_ACCEPT_LANGUAGE' => 'en-us,en;',
             'HTTP_X_REAL_IP' => '127.0.0.1',
             'HTTPS' => false,
+            'CONTENT_TYPE' => 'Test',
+            'CONTENT_LENGTH' => '10',
         );
         $headers = array(
             'host' => 'example.loc',
@@ -39,6 +41,8 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             'accept' => '*/*',
             'accept-language' => 'en-us,en;',
             'x-real-ip' => '127.0.0.1',
+            'content-type' => 'Test',
+            'content-length' => '10',
         );
         $this->assertEquals($headers, Server::loadHTTPHeaders($server));
     }
