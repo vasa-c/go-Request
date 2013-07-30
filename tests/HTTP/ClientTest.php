@@ -21,7 +21,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testGet()
     {
-        $server = array(
+        $aserver = array(
             'REMOTE_ADDR' => '123.45.67.89',
             'REMOTE_PORT' => '12345',
             'HTTP_USER_AGENT' => 'Mozilla',
@@ -30,7 +30,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => '/',
             'HTTP_REFERER' => '/login',
         );
-        $client = new Client($server);
+        $client = new Client($aserver);
         $this->assertEquals('123.45.67.89', $client->ip);
         $this->assertEquals('12345', $client->port);
         $this->assertEquals('Mozilla', $client->userAgent);
