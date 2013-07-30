@@ -18,6 +18,7 @@ namespace go\Request\HTTP;
  * @property-read string $content-length
  * @property-read string $cookie
  * @property-read string $host
+ * @property-read string $referer
  * @property-read string $user_agent
  * @property-read string $x_forvarded_for
  * @property-read string $x_real_ip

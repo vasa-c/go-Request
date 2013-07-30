@@ -14,6 +14,7 @@ namespace go\Request\HTTP;
  * @property-read string $userAgent
  * @property-read string $acceptLanguage
  * @property-read string $acceptEncoding
+ * @property-read string $referer
  */
 class Client
 {
@@ -70,6 +71,7 @@ class Client
         'userAgent' => 'HTTP_USER_AGENT',
         'acceptLanguage' => 'HTTP_ACCEPT_LANGUAGE',
         'acceptEncoding' => 'HTTP_ACCEPT_ENCODING',
+        'referer' => 'HTTP_REFERER'
     );
 
     /**

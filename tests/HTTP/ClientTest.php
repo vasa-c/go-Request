@@ -28,6 +28,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'HTTP_ACCEPT_LANGUAGE' => 'ru-ru',
             'HTTP_ACCEPT_ENCODING' => 'gzip, deflate',
             'REQUEST_URI' => '/',
+            'HTTP_REFERER' => '/login',
         );
         $client = new Client($server);
         $this->assertEquals('123.45.67.89', $client->ip);
@@ -35,6 +36,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Mozilla', $client->userAgent);
         $this->assertEquals('ru-ru', $client->acceptLanguage);
         $this->assertEquals('gzip, deflate', $client->acceptEncoding);
+        $this->assertEquals('/login', $client->referer);
 
         $this->setExpectedException('LogicException');
         return $client->unknown;
