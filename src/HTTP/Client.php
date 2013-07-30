@@ -16,56 +16,11 @@ namespace go\Request\HTTP;
  * @property-read string $acceptEncoding
  * @property-read string $referer
  */
-class Client
+class Client extends Helpers\Fields
 {
-    /**
-     * Constructor
-     *
-     * @param array $server [optional]
-     *        repl for $_SERVER (for test)
-     */
-    public function __construct(array $server = null)
-    {
-        if (\is_null($server)) {
-            $server = $_SERVER;
-        }
-        $this->fields = array();
-        foreach (self::$headers as $k => $v) {
-            $this->fields[$k] = isset($server[$v]) ? $server[$v] : null;
-        }
-    }
+    protected $name = 'Client';
 
-    /**
-     * Magic get
-     *
-     * @param string $key
-     * @return mixed
-     * @throws \LogicException
-     */
-    public function __get($key)
-    {
-        if (!isset(self::$headers[$key])) {
-            throw new \LogicException('Client->'.$key.' is not found');
-        }
-        return $this->fields[$key];
-    }
-
-    /**
-     * Magic set (forbidden)
-     *
-     * @param string $key
-     * @param mixed $value
-     * @throws \LogicException
-     */
-    public function __set($key, $value)
-    {
-        throw new \LogicException('Client instance is read-only');
-    }
-
-    /**
-     * @var array
-     */
-    private static $headers = array(
+    protected $headers = array(
         'ip' => 'REMOTE_ADDR',
         'port' => 'REMOTE_PORT',
         'userAgent' => 'HTTP_USER_AGENT',
@@ -73,9 +28,4 @@ class Client
         'acceptEncoding' => 'HTTP_ACCEPT_ENCODING',
         'referer' => 'HTTP_REFERER'
     );
-
-    /**
-     * @var array
-     */
-    private $fields;
 }
