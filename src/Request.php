@@ -122,6 +122,7 @@ class Request
                     $context = array(
                         'server' => $server,
                         'getllaheaders' => false,
+                        'headers' => $this->context['headers'],
                     );
                 } else {
                     $context = null;
