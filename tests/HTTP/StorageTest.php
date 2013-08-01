@@ -178,6 +178,12 @@ class StorageTest extends \PHPUnit_Framework_TestCase
         $storage->child('int', true);
     }
 
+    /**
+     * @covers go\Request\HTTP\Storage::__get
+     * @covers go\Request\HTTP\Storage::__isset
+     * @covers go\Request\HTTP\Storage::__set
+     * @covers go\Request\HTTP\Storage::__unset
+     */
     public function testMagic()
     {
         $storage = new Storage($this->vars);
@@ -198,5 +204,33 @@ class StorageTest extends \PHPUnit_Framework_TestCase
 
         $this->setExpectedException('LogicException');
         $storage->id = '456';
+    }
+
+    /**
+     * @covers go\Request\HTTP\Storage::offsetGet
+     * @covers go\Request\HTTP\Storage::offsetExists
+     * @covers go\Request\HTTP\Storage::offsetSet
+     * @covers go\Request\HTTP\Storage::offsetUnset
+     */
+    public function testArrayAccess()
+    {
+        $storage = new Storage($this->vars);
+
+        $this->assertSame('', $storage['empty']);
+        $this->assertSame('This is string', $storage['scalar']);
+        $this->assertSame('123', $storage['id']);
+        $this->assertNull($storage['list']);
+        $this->assertNull($storage['dict']);
+        $this->assertNull($storage['unknown']);
+
+        $this->assertTrue(isset($storage['empty']));
+        $this->assertTrue(isset($storage['scalar']));
+        $this->assertTrue(isset($storage['id']));
+        $this->assertFalse(isset($storage['list']));
+        $this->assertFalse(isset($storage['dict']));
+        $this->assertFalse(isset($storage['unknown']));
+
+        $this->setExpectedException('LogicException');
+        $storage['id'] = '456';
     }
 }

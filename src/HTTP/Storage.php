@@ -10,7 +10,7 @@ namespace go\Request\HTTP;
 
 use go\Request\HTTP\Helpers\Validator;
 
-class Storage
+class Storage implements \ArrayAccess
 {
     /**
      * Constructor
@@ -193,6 +193,51 @@ class Storage
      * @throws \LogicException
      */
     public function __unset($key)
+    {
+        throw new \LogicException('Storage instance is read-only');
+    }
+
+    /**
+     * @override \ArrayAccess
+     *
+     * @param string $offset
+     * @return mixed
+     */
+    public function offsetGet($offset)
+    {
+        return $this->get($offset, null);
+    }
+
+    /**
+     * @override \ArrayAccess
+     *
+     * @param string $offset
+     * @return boolean
+     */
+    public function offsetExists($offset)
+    {
+        return $this->exists($offset, null);
+    }
+
+    /**
+     * @override \ArrayAccess (forbidden)
+     *
+     * @param string $offset
+     * @param mixed $value
+     * @throws \LogicException
+     */
+    public function offsetSet($offset, $value)
+    {
+        throw new \LogicException('Storage instance is read-only');
+    }
+
+    /**
+     * @override \ArrayAccess (forbidden)
+     *
+     * @param string $offset
+     * @throws \LogicException
+     */
+    public function offsetUnset($offset)
     {
         throw new \LogicException('Storage instance is read-only');
     }
