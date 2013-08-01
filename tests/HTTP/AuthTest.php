@@ -71,4 +71,34 @@ class AuthTest extends \PHPUnit_Framework_TestCase
         $expected = 'WWW-Authenticate: Digest realm="area", nonce="1234", x="qu\"ot"';
         $this->assertEquals($expected, $auth->getDigestHeader('area', '1234', array('x' => 'qu"ot')));
     }
+
+    public function testCheckBasicForList()
+    {
+        $users = array(
+            'vasya' => 'pupkin',
+            'petya' => 'lojkin',
+            'misha' => 'krushkin',
+        );
+        $aserver1 = array();
+        $auth1 = new Auth($aserver1);
+        $this->assertFalse($auth1->checkBasicForList($users));
+        $aserver2 = array(
+            'PHP_AUTH_USER' => 'petya',
+            'PHP_AUTH_PW' => 'lojkin',
+        );
+        $auth2 = new Auth($aserver2);
+        $this->assertEquals('petya', $auth2->checkBasicForList($users));
+        $aserver3 = array(
+            'PHP_AUTH_USER' => 'petya',
+            'PHP_AUTH_PW' => 'qwerty',
+        );
+        $auth3 = new Auth($aserver3);
+        $this->assertFalse($auth3->checkBasicForList($users));
+        $aserver4 = array(
+            'PHP_AUTH_USER' => 'masha',
+            'PHP_AUTH_PW' => 'kashina',
+        );
+        $auth4 = new Auth($aserver4);
+        $this->assertFalse($auth4->checkBasicForList($users));
+    }
 }

@@ -157,6 +157,27 @@ class Auth
     }
 
     /**
+     * Check basic authorization for users list
+     *
+     * @param array $users
+     *        username => password
+     */
+    public function checkBasicForList(array $users)
+    {
+        if ($this->subs['type'] != 'Basic') {
+            return false;
+        }
+        $auser = $this->subs['user'];
+        $apassword = $this->subs['password'];
+        foreach ($users as $user => $password) {
+            if (($auser == $user) && ($apassword == $password)) {
+                return $auser;
+            }
+        }
+        return false;
+    }
+
+    /**
      * @return array
      */
     private function loadDigestParams()
