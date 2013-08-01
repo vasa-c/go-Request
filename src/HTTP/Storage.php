@@ -10,7 +10,7 @@ namespace go\Request\HTTP;
 
 use go\Request\HTTP\Helpers\Validator;
 
-class Storage implements \ArrayAccess
+class Storage implements \ArrayAccess, \Countable
 {
     /**
      * Constructor
@@ -243,6 +243,32 @@ class Storage implements \ArrayAccess
     }
 
     /**
+     * @override \Countable
+     *
+     * @return int
+     */
+    public function count()
+    {
+        return \count($this->getListOfScalar());
+    }
+
+    /**
+     * @return array
+     */
+    private function getListOfScalar()
+    {
+        if (!$this->listOfScalar) {
+            $this->listOfScalar = array();
+            foreach ($this->vars as $k => $v) {
+                if (\is_scalar($v)) {
+                    $this->listOfScalar[$k] = $v;
+                }
+            }
+        }
+        return $this->listOfScalar;
+    }
+
+    /**
      * Variables
      *
      * @var array
@@ -276,4 +302,11 @@ class Storage implements \ArrayAccess
      * @var array
      */
     private $childs = array();
+
+    /**
+     * List of scalar variables only
+     *
+     * @var array
+     */
+    private $listOfScalar;
 }

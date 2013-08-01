@@ -233,4 +233,13 @@ class StorageTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('LogicException');
         $storage['id'] = '456';
     }
+
+    /**
+     * @covers go\Request\HTTP\Storage::count
+     */
+    public function testCountable()
+    {
+        $storage = new Storage($this->vars);
+        $this->assertCount(6, $storage);
+    }
 }
