@@ -273,4 +273,19 @@ class StorageTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals($expected, $actual);
     }
+
+    /**
+     * @covers go\Request\HTTP\Storage::__call
+     */
+    public function testMagicMethods()
+    {
+        $storage = new Storage($this->vars);
+        $this->assertSame('This is string', $storage->scalar('scalar'));
+        $this->assertSame(-123, $storage->int('int'));
+        $this->assertEquals(array('1', '2', '3'), $storage->list('list'));
+        $this->assertEquals(array('1', '2', '3'), $storage->array('list'));
+        $this->assertNull($storage->uint('int'));
+        $this->assertEquals('xx', $storage->uint('int', 'xx'));
+        $this->assertNull($storage->mixed('unknown'));
+    }
 }

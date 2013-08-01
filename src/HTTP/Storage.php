@@ -10,6 +10,17 @@ namespace go\Request\HTTP;
 
 use go\Request\HTTP\Helpers\Validator;
 
+/**
+ * @method string scalar(string $name)
+ * @method float float(string $name)
+ * @method int int(string $name)
+ * @method int uint(string $name)
+ * @method int id(string $name)
+ * @method array list(string $name)
+ * @method array dict(string $name)
+ * @method array array(string $name)
+ * @method mixed mixed(string $name)
+ */
 class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     /**
@@ -197,6 +208,21 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
     public function __unset($key)
     {
         throw new \LogicException('Storage instance is read-only');
+    }
+
+    /**
+     * Magic call
+     *
+     * @param string $method
+     * @param array $args
+     */
+    public function __call($method, $args)
+    {
+        if (empty($args)) {
+            throw new \LogicException('Format: Storage->'.$method.'($type)');
+        }
+        \array_splice($args, 1, 0, $method);
+        return \call_user_func_array(array($this, 'get'), $args);
     }
 
     /**
