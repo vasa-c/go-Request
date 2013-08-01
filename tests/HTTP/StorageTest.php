@@ -242,4 +242,25 @@ class StorageTest extends \PHPUnit_Framework_TestCase
         $storage = new Storage($this->vars);
         $this->assertCount(6, $storage);
     }
+
+    /**
+     * @covers go\Request\HTTP\Storage::getIterator
+     */
+    public function testIterator()
+    {
+        $storage = new Storage($this->vars);
+        $actual = array();
+        foreach ($storage as $k => $v) {
+            $actual[$k] = $v;
+        }
+        $expected = array(
+            'empty' => '',
+            'scalar' => 'This is string',
+            'float' => '-123.456',
+            'int' => '-123',
+            'uint' => '0',
+            'id' => '123',
+        );
+        $this->assertEquals($expected, $actual);
+    }
 }

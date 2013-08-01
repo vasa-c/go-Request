@@ -10,7 +10,7 @@ namespace go\Request\HTTP;
 
 use go\Request\HTTP\Helpers\Validator;
 
-class Storage implements \ArrayAccess, \Countable
+class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     /**
      * Constructor
@@ -250,6 +250,16 @@ class Storage implements \ArrayAccess, \Countable
     public function count()
     {
         return \count($this->getListOfScalar());
+    }
+
+    /**
+     * @override \IteratorAggregate
+     *
+     * @return \Traversable
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->getListOfScalar());
     }
 
     /**
