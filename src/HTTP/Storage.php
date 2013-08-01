@@ -32,11 +32,13 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Get all variables as array
      *
+     * @param boolean $onlyscalar [optional]
+     *        return only scalar variables
      * @return array
      */
-    public function getAllVars()
+    public function getAllVars($onlyscalar = false)
     {
-        return $this->vars;
+        return $onlyscalar ? $this->getListOfScalar() : $this->vars;
     }
 
     /**
