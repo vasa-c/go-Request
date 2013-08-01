@@ -177,4 +177,26 @@ class StorageTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('InvalidArgumentException');
         $storage->child('int', true);
     }
+
+    public function testMagic()
+    {
+        $storage = new Storage($this->vars);
+
+        $this->assertSame('', $storage->empty);
+        $this->assertSame('This is string', $storage->scalar);
+        $this->assertSame('123', $storage->id);
+        $this->assertNull($storage->list);
+        $this->assertNull($storage->dict);
+        $this->assertNull($storage->unknown);
+
+        $this->assertTrue(isset($storage->empty));
+        $this->assertTrue(isset($storage->scalar));
+        $this->assertTrue(isset($storage->id));
+        $this->assertFalse(isset($storage->list));
+        $this->assertFalse(isset($storage->dict));
+        $this->assertFalse(isset($storage->unknown));
+
+        $this->setExpectedException('LogicException');
+        $storage->id = '456';
+    }
 }

@@ -153,6 +153,51 @@ class Storage
     }
 
     /**
+     * Magic get (only scalar)
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public function __get($key)
+    {
+        return $this->get($key, null);
+    }
+
+    /**
+     * Magic isset (only scalar)
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public function __isset($key)
+    {
+        return $this->exists($key, null);
+    }
+
+    /**
+     * Magic set (forbidden)
+     *
+     * @param string $key
+     * @param mixed $value
+     * @throws \LogicException
+     */
+    public function __set($key, $value)
+    {
+        throw new \LogicException('Storage instance is read-only');
+    }
+
+    /**
+     * Magic unset
+     *
+     * @param string $key
+     * @throws \LogicException
+     */
+    public function __unset($key)
+    {
+        throw new \LogicException('Storage instance is read-only');
+    }
+
+    /**
      * Variables
      *
      * @var array
