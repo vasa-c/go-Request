@@ -16,6 +16,7 @@ namespace go\Request\HTTP;
  * @property-read \go\Request\HTTP\Headers $headers
  * @property-read \go\Request\HTTP\Server $server
  * @property-read \go\Request\HTTP\Script $script
+ * @property-read string $postData
  */
 class HTTPRequest
 {
@@ -71,6 +72,39 @@ class HTTPRequest
     }
 
     /**
+     * Get plain request
+     *
+     * @param boolean $body [optional]
+     * @param string $sep [optional]
+     * @return string
+     */
+    public function getPlain($body = true, $sep = "\r\n")
+    {
+        $top = array('REQUEST_METHOD', 'REQUEST_URI', 'SERVER_PROTOCOL');
+        foreach ($top as &$v) {
+            if (isset($_SERVER[$v])) {
+                $v = $_SERVER[$v];
+            } else {
+                $v = '';
+            }
+        }
+        unset($v);
+        $result = \implode(' ', $top).$sep;
+        $headers = $this->__get('headers')->getListPlainHeaders();
+        if (!empty($headers)) {
+            $result .= \implode($sep, $headers).$sep;
+        }
+        if ($body) {
+            $data = $this->__get('postData');
+            if (!empty($data)) {
+                $result .= $sep.$data;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * @param string $key
      * @return object
      */
@@ -78,6 +112,9 @@ class HTTPRequest
     {
         if ($key == 'headers') {
             return new \go\Request\HTTP\Headers($this->loadHeaders());
+        }
+        if ($key == 'postData') {
+            return @\file_get_contents('php://input');
         }
         $classname = 'go\Request\HTTP\\'.\ucfirst($key);
         return new $classname($this->server);
@@ -109,6 +146,7 @@ class HTTPRequest
         'headers' => false,
         'server' => false,
         'script' => false,
+        'postData' => false,
     );
 
     /**

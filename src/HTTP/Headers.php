@@ -180,6 +180,20 @@ class Headers implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     /**
+     * Get list headers as "header: value"
+     *
+     * @return array
+     */
+    public function getListPlainHeaders()
+    {
+        $lines = array();
+        foreach ($this->headers as $k => $v) {
+            $lines[] = $k.': '.$v;
+        }
+        return $lines;
+    }
+
+    /**
      * @var array
      */
     private $headers;
