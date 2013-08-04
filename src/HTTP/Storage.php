@@ -291,6 +291,29 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     /**
+     * Get value from allowed list
+     *
+     * @param string $name
+     * @param array $allowed
+     * @param boolean $ex [optional]
+     * @return mixed
+     */
+    public function getEnum($name, array $allowed, $ex = null)
+    {
+        if (!isset($this->vars[$name])) {
+            return null;
+        }
+        $value = $this->vars[$name];
+        if (!\is_scalar($value)) {
+            return null;
+        }
+        if (!\in_array($value, $allowed)) {
+            return null;
+        }
+        return $value;
+    }
+
+    /**
      * @return array
      */
     private function getListOfScalar()

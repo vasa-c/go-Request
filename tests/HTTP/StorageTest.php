@@ -288,4 +288,22 @@ class StorageTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('xx', $storage->uint('int', 'xx'));
         $this->assertNull($storage->mixed('unknown'));
     }
+
+    /**
+     * @covers go\Request\HTTP\Storage::getEnum
+     */
+    public function testGetEnum()
+    {
+        $vars = array(
+            'one' => 'One',
+            'two' => 'Two',
+            'three' => array('One', 'Two'),
+        );
+        $storage = new Storage($vars);
+        $allowed = array('Three', 'One', 'Four');
+        $this->assertEquals('One', $storage->getEnum('one', $allowed));
+        $this->assertNull($storage->getEnum('two', $allowed));
+        $this->assertNull($storage->getEnum('three', $allowed));
+        $this->assertNull($storage->getEnum('four', $allowed));
+    }
 }
