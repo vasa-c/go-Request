@@ -313,4 +313,45 @@ class LoadFormFormatTest extends \PHPUnit_Framework_TestCase
             array($vars, 'str', array('trim' => true, 'maxlength' => 3), 'Str', true),
         );
     }
+
+    public function testLoad()
+    {
+        $format = array(
+            'name' => array(
+                'trim' => true,
+            ),
+            'age' => array(
+                'uint' => true,
+                'range' => array(18, null),
+            ),
+            'sex' => array(
+                'enum' => array('male', 'female'),
+            ),
+            'ok' => 'check',
+        );
+        $vars1 = array(
+            'name' => '  Vasa ',
+            'age' => '25',
+            'sex' => 'male',
+            'other' => 'Other',
+        );
+        $expected1 = array(
+            'name' => 'Vasa',
+            'age' => 25,
+            'sex' => 'male',
+            'ok' => false,
+        );
+        $this->assertEquals($expected1, LoadFormFormat::load($vars1, $format));
+        $this->assertEquals((object)$expected1, LoadFormFormat::load($vars1, $format, true));
+        $this->assertNull(LoadFormFormat::load($vars1, $format, false, true));
+        unset($vars1['other']);
+        $this->assertEquals($expected1, LoadFormFormat::load($vars1, $format, false, true));
+
+        $vars2 = array(
+            'name' => '  Vasa ',
+            'age' => '12',
+            'sex' => 'male',
+        );
+        $this->assertNull(LoadFormFormat::load($vars2, $format));
+    }
 }

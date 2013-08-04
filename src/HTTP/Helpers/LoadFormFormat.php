@@ -104,9 +104,11 @@ class LoadFormFormat
      * @param string $name
      * @param mixed $params
      * @param boolean $ok
+     * @param boolean $asobject [optional]
+     * @param boolean $strict [optional]
      * @return mixed
      */
-    public static function loadField(array $vars, $name, $params, &$ok)
+    public static function loadField(array $vars, $name, $params, &$ok, $asobject = false, $strict = false)
     {
         $params = self::normalizeParams($params);
         $type = $params['type'];
@@ -125,5 +127,31 @@ class LoadFormFormat
         }
         $ok = true;
         return $value;
+    }
+
+    /**
+     * @param array $vars
+     * @param array $format
+     * @param boolean $asobject [optional]
+     * @param boolean $strict [optional]
+     * @return array
+     */
+    public static function load(array $vars, array $format, $asobject = false, $strict = false)
+    {
+        $result = array();
+        foreach ($format as $name => $params) {
+            $result[$name] = self::loadField($vars, $name, $params, $ok, $asobject, $strict);
+            if (!$ok) {
+                return null;
+            }
+            unset($vars[$name]);
+        }
+        if ($strict && (!empty($vars))) {
+            return null;
+        }
+        if ($asobject) {
+            $result = (object)$result;
+        }
+        return $result;
     }
 }
