@@ -323,4 +323,104 @@ class StorageTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('LogicException');
         $storage->setTrust(true);
     }
+
+    /**
+     * @covers go\Request\HTTP\Storage::loadForm
+     */
+    public function testLoadFormSimple()
+    {
+        $vars = array(
+            'x' => '1',
+            'y' => '2',
+            'a' => 'A',
+        );
+        $storage = new Storage($vars);
+        $settings = array(
+            'fields' => array('x'),
+            'checks' => array('y', 'z'),
+            'return' => 'array',
+        );
+        $expected = array(
+            'x' => '1',
+            'y' => true,
+            'z' => false,
+        );
+        $this->assertEquals($expected, $storage->loadForm(null, $settings));
+        $settings['strict'] = true;
+        $this->assertNull($storage->loadForm(null, $settings));
+        unset($vars['a']);
+        $storage2 = new Storage($vars);
+        $this->assertEquals($expected, $storage2->loadForm(null, $settings));
+    }
+
+    /**
+     * @covers go\Request\HTTP\Storage::loadForm
+     */
+    public function testLoadFormFormat()
+    {
+        $vars = array(
+            'x' => '-2',
+            'y' => ' Y ',
+        );
+        $storage = new Storage($vars);
+        $settings = array(
+            'format' => array(
+                'x' => array(
+                    'type' => 'int',
+                    'filter' => 'abs',
+                ),
+                'y' => array(
+                    'trim' => true,
+                ),
+            ),
+            'return' => 'array',
+        );
+        $expected = array(
+            'x' => 2,
+            'y' => 'Y',
+        );
+        $this->assertEquals($expected, $storage->loadForm(null, $settings));
+    }
+
+    /**
+     * @covers go\Request\HTTP\Storage::loadForm
+     */
+    public function testLoadFormAlias()
+    {
+        $vars = array(
+            'x' => '1',
+            'y' => '2',
+            'a' => 'A',
+        );
+        $storage = new Storage($vars);
+        $fields = array('x');
+        $checks = array('y', 'z');
+        $expected = (object)(array(
+            'x' => '1',
+            'y' => true,
+            'z' => false,
+        ));
+        $this->assertEquals($expected, $storage->loadForm(null, $fields, $checks));
+        $this->assertNull($storage->loadForm(null, $fields, $checks, true));
+        unset($vars['a']);
+        $storage2 = new Storage($vars);
+        $this->assertEquals($expected, $storage2->loadForm(null, $fields, $checks, true));
+    }
+
+    /**
+     * @covers go\Request\HTTP\Storage::loadForm
+     */
+    public function testLoadFormName()
+    {
+        $vars = array(
+            'x' => '1',
+            'y' => array(
+                'x' => '2',
+            ),
+        );
+        $storage = new Storage($vars);
+        $this->assertEquals('1', $storage->loadForm(null, array('x'))->x);
+        $this->assertEquals('2', $storage->loadForm('y', array('x'))->x);
+        $this->assertNull($storage->loadForm('y', array('z')));
+    }
 }

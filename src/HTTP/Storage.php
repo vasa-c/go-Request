@@ -9,6 +9,7 @@
 namespace go\Request\HTTP;
 
 use go\Request\HTTP\Helpers\Validator;
+use go\Request\HTTP\Helpers\LoadForm;
 
 /**
  * @method string scalar(string $name)
@@ -281,6 +282,28 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
             return null;
         }
         return $value;
+    }
+
+    /**
+     * Load form by format
+     *
+     * @param string $name
+     * @param array $settings
+     * @param array $checks [optional]
+     * @param booelan $strict [optional]
+     * @return mixed
+     * @throws \Exception
+     */
+    public function loadForm($name, array $settings, array $checks = null, $strict = false)
+    {
+        if (isset($settings[0])) {
+            $settings = array(
+                'fields' => $settings,
+                'checks' => $checks,
+                'strict' => $strict,
+            );
+        }
+        return LoadForm::load($name, $settings, $this->vars);
     }
 
     /**
