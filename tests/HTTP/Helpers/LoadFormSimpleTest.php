@@ -24,6 +24,9 @@ class LoadFormSimpleTest extends \PHPUnit_Framework_TestCase
         'five' => '5',
     );
 
+    /**
+     * @covers go\Request\HTTP\Helpers\LoadFormSimple::load
+     */
     public function testFields()
     {
         $fields = array('one', 'two', 'three');
@@ -36,6 +39,9 @@ class LoadFormSimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @covers go\Request\HTTP\Helpers\LoadFormSimple::load
+     */
     public function testChecks()
     {
         $fields = array('one', 'two');
@@ -50,6 +56,9 @@ class LoadFormSimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @covers go\Request\HTTP\Helpers\LoadFormSimple::load
+     */
     public function testError()
     {
         $fields = array('one', 'two', 'three', 'four');
@@ -57,6 +66,9 @@ class LoadFormSimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($actual);
     }
 
+    /**
+     * @covers go\Request\HTTP\Helpers\LoadFormSimple::load
+     */    
     public function testStrict()
     {
         $fields1 = array('one', 'two', 'three');

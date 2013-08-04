@@ -1,4 +1,10 @@
 <?php
+/**
+ * Helper: simple load form
+ *
+ * @package go\Request
+ * @author Grigoriev Oleg aka vasa_c <go.vasac@gmail.com>
+ */
 
 namespace go\Request\HTTP\Helpers;
 
