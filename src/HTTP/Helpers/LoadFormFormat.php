@@ -49,4 +49,53 @@ class LoadFormFormat
         }
         return $value;
     }
+
+    /**
+     * @param mixed $value
+     * @param array $params
+     * @return boolean
+     */
+    public static function validate($value, array $params)
+    {
+        if (!empty($params['notempty'])) {
+            if (\is_string($value) && (\strlen($value) === 0)) {
+                return false;
+            }
+        }
+        if (!empty($params['enum'])) {
+            if (!\in_array($value, $params['enum'])) {
+                return false;
+            }
+        }
+        if (!empty($params['match'])) {
+            if (!\preg_match($params['match'], $value)) {
+                return false;
+            }
+        }
+        if (!empty($params['maxlength'])) {
+            if (\function_exists('mb_strlen')) {
+                $len = \mb_strlen($value, 'UTF-8');
+            } else {
+                $len = \strlen($value);
+            }
+            if ($len > $params['maxlength']) {
+                return false;
+            }
+        }
+        if (!empty($params['range'])) {
+            $range = $params['range'];
+            if (isset($range[0]) && ($value < $range[0])) {
+                return false;
+            }
+            if (isset($range[1]) && ($value > $range[1])) {
+                return false;
+            }
+        }
+        if (!empty($params['validator'])) {
+            if (!\call_user_func($params['validator'], $value)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
