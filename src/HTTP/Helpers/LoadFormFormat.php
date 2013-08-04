@@ -125,6 +125,11 @@ class LoadFormFormat
             $ok = false;
             return null;
         }
+        if (isset($params['format'])) {
+            $value = self::load($value, $params['format'], $asobject, $strict);
+            $ok = !\is_null($value);
+            return $ok ? $value : null;
+        }
         $ok = true;
         return $value;
     }

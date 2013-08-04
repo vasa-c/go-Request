@@ -354,4 +354,47 @@ class LoadFormFormatTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertNull(LoadFormFormat::load($vars2, $format));
     }
+
+    public function testReqursive()
+    {
+        $format = array(
+            'name' => true,
+            'email' => true,
+            'ok' => 'check',
+            'address' => array(
+                'format' => array(
+                    'country' => array(
+                        'trim' => true,
+                    ),
+                    'city' => true,
+                    'tramp' => 'check',
+                ),
+            ),
+        );
+        $vars = array(
+            'name' => ' Name',
+            'email' => 'e@mail',
+            'ok' => '1',
+            'address' => array(
+                'country' => ' Russia ',
+                'city' => 'Spb',
+                'wow' => 'wow',
+            ),
+        );
+        $expected = array(
+            'name' => ' Name',
+            'email' => 'e@mail',
+            'ok' => true,
+            'address' => array(
+                'country' => 'Russia',
+                'city' => 'Spb',
+                'tramp' => false,
+            ),
+        );
+        $this->assertEquals($expected, LoadFormFormat::load($vars, $format));
+        $this->assertEquals('Spb', LoadFormFormat::load($vars, $format, true)->address->city);
+        $this->assertNull(LoadFormFormat::load($vars, $format, false, true));
+        unset($vars['address']['wow']);
+        $this->assertEquals($expected, LoadFormFormat::load($vars, $format, false, true));
+    }
 }
