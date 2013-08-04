@@ -68,37 +68,7 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function exists($name, $type = null, $ex = null)
     {
-        if (!isset($this->vars[$name])) {
-            return false;
-        }
-        $value = $this->vars[$name];
-        $this->last = $value;
-        switch ($type) {
-            case null:
-            case 'scalar':
-                return \is_scalar($value);
-            case 'float':
-                $this->last = (float)$value;
-                return Validator::isFloat($value);
-            case 'int':
-                $this->last = (int)$value;
-                return Validator::isInt($value);
-            case 'uint':
-                $this->last = (int)$value;
-                return Validator::isUInt($value);
-            case 'id':
-                $this->last = (int)$value;
-                return Validator::isId($value);
-            case 'list':
-                return Validator::isListOfScalar($value);
-            case 'dict':
-                return Validator::isDictOfScalar($value);
-            case 'array':
-                return \is_array($value);
-            case 'mixed':
-                return true;
-        }
-        throw new \InvalidArgumentException(__CLASS__.': type "'.$type.'" is invalid');
+        return Validator::exists($this->vars, $name, $type);
     }
 
     /**
@@ -122,10 +92,10 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
         if ($type === 'check') {
             return isset($this->vars[$name]);
         }
-        if (!$this->exists($name, $type, $ex)) {
+        if (!Validator::exists($this->vars, $name, $type, $lvalue)) {
             return $default;
         }
-        return $this->last;
+        return $lvalue;
     }
 
     /**
@@ -375,13 +345,6 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
      * @var boolean
      */
     private $trusted;
-
-    /**
-     * Last value
-     *
-     * @var mixed
-     */
-    private $last;
 
     /**
      * Cache of childs
