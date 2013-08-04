@@ -306,4 +306,21 @@ class StorageTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($storage->getEnum('three', $allowed));
         $this->assertNull($storage->getEnum('four', $allowed));
     }
+
+    /**
+     * @covers go\Request\HTTP\Storage::__construct
+     * @covers go\Request\HTTP\Storage::isTrusted
+     * @covers go\Request\HTTP\Storage::setTrust
+     */
+    public function testTrusted()
+    {
+        $storage = new Storage(array(), false, false);
+        $this->assertFalse($storage->isTrusted());
+        $storage->setTrust(true);
+        $this->assertTrue($storage->isTrusted());
+        $storage->setTrust(false, true);
+        $this->assertFalse($storage->isTrusted());
+        $this->setExpectedException('LogicException');
+        $storage->setTrust(true);
+    }
 }

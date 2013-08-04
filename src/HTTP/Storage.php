@@ -30,14 +30,14 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
      *        variables
      * @param boolean $ex
      *        executable by default
-     * @param boolean $trust
+     * @param boolean $trusted
      *        is request trusted?
      */
-    public function __construct(array $vars, $ex = false, $trust = true)
+    public function __construct(array $vars, $ex = false, $trusted = true)
     {
         $this->vars = $vars;
         $this->ex = $ex;
-        $this->trust = $trust;
+        $this->trusted = $trusted;
     }
 
     /**
@@ -314,6 +314,32 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     /**
+     * Is request truested?
+     *
+     * @return boolean
+     */
+    public function isTrusted()
+    {
+        return $this->trusted;
+    }
+
+    /**
+     * Set request trust
+     *
+     * @param boolean $trusted
+     * @param boolean $finally
+     * @throws \LogicException
+     */
+    public function setTrust($trusted, $finally = false)
+    {
+        if ($this->finallyTrust) {
+            throw new \LogicException('Storage->setTrust() is forbidden');
+        }
+        $this->trusted = $trusted;
+        $this->finallyTrust = $finally;
+    }
+
+    /**
      * @return array
      */
     private function getListOfScalar()
@@ -348,7 +374,7 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
      *
      * @var boolean
      */
-    private $trust;
+    private $trusted;
 
     /**
      * Last value
@@ -370,4 +396,11 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
      * @var array
      */
     private $listOfScalar;
+
+    /**
+     * $trusted is finally
+     *
+     * @var boolean
+     */
+    private $finallyTrust = false;
 }
