@@ -27,4 +27,26 @@ class LoadFormFormat
         return $params;
     }
 
+    /**
+     * @param mixed $value
+     * @param array $params
+     * @return mixed
+     */
+    public static function filter($value, array $params)
+    {
+        if (isset($params['trim'])) {
+            $trim = $params['trim'];
+            if ($trim === 'left') {
+                $value = \ltrim($value);
+            } elseif ($trim === 'right') {
+                $value = \rtrim($value);
+            } else {
+                $value = \trim($value);
+            }
+        }
+        if (isset($params['filter'])) {
+            $value = \call_user_func($params['filter'], $value);
+        }
+        return $value;
+    }
 }

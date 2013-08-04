@@ -76,4 +76,67 @@ class LoadFormFormatTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @covers go\Request\HTTP\Helpers\LoadFormFormat::filter
+     * @dataProvider providerFilter
+     * @param mixed $params
+     * @param array $expected
+     */
+    public function testFilter($value, $params, $expected)
+    {
+        $this->assertEquals($expected, LoadFormFormat::filter($value, $params));
+    }
+
+    /**
+     * @return array
+     */
+    public function providerFilter()
+    {
+        $filter = (function ($value) {
+            return \strtolower($value);
+        });
+        return array(
+            array(
+                '  This is test String ',
+                array(),
+                '  This is test String ',
+            ),
+            array(
+                '  This is test String ',
+                array(
+                    'trim' => true,
+                ),
+                'This is test String',
+            ),
+            array(
+                '  This is test String ',
+                array(
+                    'trim' => 'left',
+                ),
+                'This is test String ',
+            ),
+            array(
+                '  This is test String ',
+                array(
+                    'trim' => 'right',
+                ),
+                '  This is test String',
+            ),
+            array(
+                '  This is test String ',
+                array(
+                    'filter' => $filter,
+                ),
+                '  this is test string ',
+            ),
+            array(
+                '  This is test String ',
+                array(
+                    'trim' => true,
+                    'filter' => $filter,
+                ),
+                'this is test string',
+            ),
+        );
+    }
 }
