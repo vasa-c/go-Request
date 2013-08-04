@@ -270,4 +270,47 @@ class LoadFormFormatTest extends \PHPUnit_Framework_TestCase
             ),
         );
     }
+
+    /**
+     * @covers go\Request\HTTP\Helpers\LoadFormFormat::loadField
+     * @dataProvider providerLoadField
+     * @param array $vars
+     * @param string $name
+     * @param array $params
+     * @param mixed $expected
+     * @param boolean $ok
+     */
+    public function testLoadField($vars, $name, $params, $expected, $ok)
+    {
+        $actual = LoadFormFormat::loadField($vars, $name, $params, $nok);
+        if (!$ok) {
+            $this->assertFalse($nok);
+        } else {
+            $this->assertTrue($nok);
+            $this->assertSame($expected, $actual);
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function providerLoadField()
+    {
+        $vars = array(
+            'one' => 'One',
+            'two' => '2',
+            'str' => '  Str  ',
+        );
+        return array(
+            array($vars, 'unknown', array(), null, false),
+            array($vars, 'one', array(), 'One', true),
+            array($vars, 'one', 'uint', null, false),
+            array($vars, 'two', 'uint', 2, true),
+            array($vars, 'two', 'check', true, true),
+            array($vars, 'unknown', 'check', false, true),
+            array($vars, 'str', array('trim' => true), 'Str', true),
+            array($vars, 'str', array('maxlength' => 3), null, false),
+            array($vars, 'str', array('trim' => true, 'maxlength' => 3), 'Str', true),
+        );
+    }
 }

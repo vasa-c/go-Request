@@ -98,4 +98,32 @@ class LoadFormFormat
         }
         return true;
     }
+
+    /**
+     * @param array $vars
+     * @param string $name
+     * @param mixed $params
+     * @param boolean $ok
+     * @return mixed
+     */
+    public static function loadField(array $vars, $name, $params, &$ok)
+    {
+        $params = self::normalizeParams($params);
+        $type = $params['type'];
+        if ($type === 'check') {
+            $ok = true;
+            return isset($vars[$name]);
+        }
+        if (!Validator::exists($vars, $name, $type, $value)) {
+            $ok = false;
+            return null;
+        }
+        $value = self::filter($value, $params);
+        if (!self::validate($value, $params)) {
+            $ok = false;
+            return null;
+        }
+        $ok = true;
+        return $value;
+    }
 }
