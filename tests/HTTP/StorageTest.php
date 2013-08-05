@@ -423,4 +423,40 @@ class StorageTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('2', $storage->loadForm('y', array('x'))->x);
         $this->assertNull($storage->loadForm('y', array('z')));
     }
+
+    /**
+     * @covers go\Request\HTTP\Storage::loadListForms
+     */
+    public function testLoadListForms()
+    {
+        $vars = array(
+            'list' => array(
+                '3' => array(
+                    'name' => 'Vasa',
+                    'email' => 'v@asa',
+                    'other' => 'other',
+                ),
+                '5' => array(
+                    'name' => 'Peta',
+                    'email' => 'p@eta',
+                ),
+            ),
+        );
+        $storage = new Storage($vars);
+        $settings = array(
+            'fields' => array('name', 'email'),
+            'return' => 'array',
+        );
+        $expected = array(
+            '3' => array(
+                'name' => 'Vasa',
+                'email' => 'v@asa',
+            ),
+            '5' => array(
+                'name' => 'Peta',
+                'email' => 'p@eta',
+            ),
+        );
+        $this->assertEquals($expected, $storage->loadListForms('list', $settings));
+    }
 }

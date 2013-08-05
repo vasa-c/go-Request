@@ -43,8 +43,47 @@ class LoadForm
     public static function load($name, array $settings, array $vars)
     {
         $vars = self::getDataForm($name, $settings, $vars);
-        $return = empty($settings['return']) ? 'object' : $settings['return'];
+        return self::loadSingleByVars($settings, $vars);
+    }
+
+    /**
+     * @param string $name
+     * @param array $settings
+     * @param array $vars
+     * @return mixed
+     * @throws \Exception
+     */
+    public static function loadList($name, array $settings, array $vars)
+    {
+        $vars = self::getDataForm($name, $settings, $vars);
+        if (\is_array($vars)) {
+            $result = array();
+            $strict = !empty($settings['strict']);
+            foreach ($vars as $k => $v) {
+                $res = self::loadSingleByVars($settings, $v);
+                if (!\is_null($res)) {
+                    $result[$k] = $res;
+                } elseif ($strict) {
+                    $result = null;
+                    break;
+                }
+            }
+        } else {
+            $result = null;
+        }
+        if (\is_null($result)) {
+            if (!empty($settings['throws'])) {
+                throw new \RuntimeException('Storage::loadListForms(): form is not loaded');
+            }
+            return null;
+        }
+        return $result;
+    }
+
+    private static function loadSingleByVars(array $settings, $vars)
+    {
         if ($vars) {
+            $return = empty($settings['return']) ? 'object' : $settings['return'];
             if (isset($settings['format'])) {
                 $result = self::formatLoad($vars, $settings, ($return == 'object'));
             } elseif (isset($settings['fields'])) {

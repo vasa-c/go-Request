@@ -307,6 +307,19 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     /**
+     * Load form as list blocks
+     *
+     * @param string $name
+     * @param array $settings
+     * @return mixed
+     * @throws \Exception
+     */
+    public function loadListForms($name, array $settings)
+    {
+        return LoadForm::loadList($name, $settings, $this->vars);
+    }
+
+    /**
      * Is request truested?
      *
      * @return boolean

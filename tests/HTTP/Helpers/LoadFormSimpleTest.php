@@ -68,7 +68,7 @@ class LoadFormSimpleTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers go\Request\HTTP\Helpers\LoadFormSimple::load
-     */    
+     */
     public function testStrict()
     {
         $fields1 = array('one', 'two', 'three');

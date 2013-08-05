@@ -192,4 +192,149 @@ class LoadFormTest extends \PHPUnit_Framework_TestCase
         unset($settings['return']);
         $this->assertEquals(5, LoadForm::load('y', $settings, $vars)->c->e);
     }
+
+    /**
+     * @covers go\Request\HTTP\Helpers\LoadForm::getDataForm
+     */
+    public function testLoadListFormsFormat()
+    {
+        $vars = array(
+            'list' => array(
+                '5' => array(
+                    'name' => ' Vasa ',
+                    'del' => '1',
+                    'block' => array(
+                        'a' => 'A',
+                        'b' => '1',
+                    ),
+                ),
+                '7' => array(
+                    'name' => 'Peta',
+                    'block' => array(
+                        'a' => 'P',
+                        'b' => '-2',
+                    ),
+                ),
+                '9' => array(
+                    'name' => 'Misha',
+                    'block' => array(
+                        'unk' => 'unk',
+                    ),
+                ),
+                '15' => array(
+                    'name' => 'Masha',
+                    'block' => array(
+                        'a' => 'Q',
+                        'b' => '3',
+                    ),
+                ),
+            ),
+        );
+        $expected = array(
+            '5' => array(
+                'name' => 'Vasa',
+                'del' => true,
+                'block' => array(
+                    'a' => 'A',
+                    'b' => 1,
+                ),
+            ),
+            '7' => array(
+                'name' => 'Peta',
+                'del' => false,
+                'block' => array(
+                    'a' => 'P',
+                    'b' => 2,
+                ),
+            ),
+            '15' => array(
+                'name' => 'Masha',
+                'del' => false,
+                'block' => array(
+                    'a' => 'Q',
+                    'b' => 3,
+                ),
+            ),
+        );
+        $settings = array(
+            'format' => array(
+                'name' => array(
+                    'trim' => true,
+                ),
+                'del' => 'check',
+                'block' => array(
+                    'format' => array(
+                        'a' => true,
+                        'b' => array(
+                            'type' => 'int',
+                            'filter' => 'abs',
+                        ),
+                    ),
+                ),
+            ),
+            'return' => 'array',
+        );
+        $this->assertEquals($expected, LoadForm::loadList('list', $settings, $vars));
+        $settings['return'] = 'object';
+        $actual = LoadForm::loadList('list', $settings, $vars);
+        $this->assertSame(3, $actual['15']->block->b);
+        $settings['return'] = 'Storage';
+        $actual = LoadForm::loadList('list', $settings, $vars);
+        $this->assertSame(3, $actual['15']->child('block')->b);
+        $settings['strict'] = true;
+        $this->assertNull(LoadForm::loadList('list', $settings, $vars));
+        $settings['throws'] = true;
+        $this->setExpectedException('Exception');
+        LoadForm::loadList('list', $settings, $vars);
+    }
+
+    /**
+     * @covers go\Request\HTTP\Helpers\LoadForm::getDataForm
+     */
+    public function testLoadListFormsSimple()
+    {
+        $vars = array(
+            '3' => array(
+                'name' => 'Vasa',
+                'email' => 'v@asa',
+            ),
+            '7' => array(
+                'name' => 'unkn',
+            ),
+            '11' => array(
+                'name' => 'Peta',
+                'email' => 'p@eta',
+                'del' => '1',
+            ),
+        );
+        $expected = array(
+            '3' => array(
+                'name' => 'Vasa',
+                'email' => 'v@asa',
+                'del' => false,
+            ),
+            '11' => array(
+                'name' => 'Peta',
+                'email' => 'p@eta',
+                'del' => true,
+            ),
+        );
+        $settings = array(
+            'fields' => array('name', 'email'),
+            'checks' => array('del'),
+            'return' => 'array',
+        );
+        $this->assertEquals($expected, LoadForm::loadList(null, $settings, $vars));
+        $settings['return'] = 'object';
+        $actual = LoadForm::loadList(null, $settings, $vars);
+        $this->assertEquals('p@eta', $actual[11]->email);
+        $settings['return'] = 'Storage';
+        $actual = LoadForm::loadList(null, $settings, $vars);
+        $this->assertEquals('p@eta', $actual[11]->get('email'));
+        $settings['strict'] = true;
+        $this->assertNull(LoadForm::loadList(null, $settings, $vars));
+        $settings['throws'] = true;
+        $this->setExpectedException('Exception');
+        LoadForm::loadList(null, $settings, $vars);
+    }
 }
