@@ -89,4 +89,33 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request = new Request();
         $request->get = 'get';
     }
+
+    /**
+     * @covers \go\Request\Request::setTrust
+     */
+    public function testSetTrustByMethod()
+    {
+        $request = new Request();
+        $this->assertTrue($request->get->isTrusted());
+        $request->setTrust(false);
+        $this->assertFalse($request->get->isTrusted());
+        $this->assertFalse($request->post->isTrusted());
+        $this->setExpectedException('LogicException');
+        $request->setTrust(false);
+    }
+
+    /**
+     * @covers \go\Request\Request::__construct
+     */
+    public function testSetRequestTrustByContext()
+    {
+        $context = array(
+            'trusted' => false,
+        );
+        $request = new Request($context);
+        $this->assertFalse($request->get->isTrusted());
+        $this->assertFalse($request->post->isTrusted());
+        $this->setExpectedException('LogicException');
+        $request->post->setTrust(true);
+    }
 }

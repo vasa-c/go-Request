@@ -50,6 +50,10 @@ class Request
             'cookie' => $_COOKIE,
             'sapi' => \PHP_SAPI,
         );
+        if (isset($context['trusted'])) {
+            $this->trusted = $context['trusted'];
+            $this->finallyTrusted = true;
+        }
         if ($context) {
             $this->context = \array_merge($this->context, $context);
             $this->rcontext = true;
@@ -107,6 +111,27 @@ class Request
     }
 
     /**
+     * Set trust for request
+     *
+     * @param boolean $trusted
+     * @throws \LogicException
+     */
+    public function setTrust($trusted)
+    {
+        if ($this->finallyTrusted) {
+            throw new \LogicException('Request->setTrust() is forbidden');
+        }
+        $this->trusted = $trusted;
+        $this->finallyTrusted = true;
+        $subs = array('get', 'post', 'cookie');
+        foreach ($subs as $k) {
+            if (\is_object($this->subs[$k])) {
+                $this->subs[$k]->setTrust($trusted, true);
+            }
+        }
+    }
+
+    /**
      * @param string $key
      * @return mixed
      */
@@ -129,11 +154,17 @@ class Request
                 }
                 return new HTTP\HTTPRequest($context);
             case 'get':
-                return new HTTP\Storage($this->context['get'], false);
+                $storage = new HTTP\Storage($this->context['get'], false);
+                $storage->setTrust($this->trusted, $this->finallyTrusted);
+                return $storage;
             case 'cookie':
-                return new HTTP\Storage($this->context['cookie'], false);
+                $storage = new HTTP\Storage($this->context['cookie'], false);
+                $storage->setTrust($this->trusted, $this->finallyTrusted);
+                return $storage;
             case 'post':
-                return new HTTP\Storage($this->context['post'], true);
+                $storage = new HTTP\Storage($this->context['post'], true);
+                $storage->setTrust($this->trusted, $this->finallyTrusted);
+                return $storage;
         }
     }
 
@@ -166,4 +197,16 @@ class Request
      * @var boolean
      */
     private $rcontext = false;
+
+    /**
+     * Is request trusted?
+     *
+     * @var boolean
+     */
+    private $trusted = true;
+
+    /**
+     * @var boolean
+     */
+    private $finallyTrusted = false;
 }
