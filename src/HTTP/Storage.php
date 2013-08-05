@@ -50,6 +50,9 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function getAllVars($onlyscalar = false)
     {
+        if (!$this->checkTrust(null)) {
+            return array();
+        }
         return $onlyscalar ? $this->getListOfScalar() : $this->vars;
     }
 
@@ -69,6 +72,9 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function exists($name, $type = null, $ex = null)
     {
+        if (!$this->checkTrust($ex)) {
+            return false;
+        }
         return Validator::exists($this->vars, $name, $type);
     }
 
@@ -90,6 +96,9 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function get($name, $type = null, $default = null, $ex = null)
     {
+        if (!$this->checkTrust($ex)) {
+            return $default;
+        }
         if ($type === 'check') {
             return isset($this->vars[$name]);
         }
@@ -116,7 +125,7 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
         if (isset($this->childs[$name])) {
             return $this->childs[$name];
         }
-        if (!isset($this->vars[$name])) {
+        if ((!isset($this->vars[$name])) || (!$this->checkTrust(null))) {
             if ($throw) {
                 throw new \InvalidArgumentException('Storage->'.$name.' is not exist');
             } else {
@@ -271,6 +280,9 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function getEnum($name, array $allowed, $ex = null)
     {
+        if (!$this->checkTrust($ex)) {
+            return null;
+        }
         if (!isset($this->vars[$name])) {
             return null;
         }
@@ -303,6 +315,12 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
                 'strict' => $strict,
             );
         }
+        if (!$this->checkTrust(null)) {
+            if (!empty($settings['throws'])) {
+                throw new \RuntimeException('Storage::loadForm(): form is not loaded');
+            }
+            return null;
+        }
         return LoadForm::load($name, $settings, $this->vars);
     }
 
@@ -316,6 +334,12 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function loadListForms($name, array $settings)
     {
+        if (!$this->checkTrust(null)) {
+            if (!empty($settings['throws'])) {
+                throw new \RuntimeException('Storage::loadListForms(): form is not loaded');
+            }
+            return array();
+        }
         return LoadForm::loadList($name, $settings, $this->vars);
     }
 
@@ -352,13 +376,30 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
     {
         if (!$this->listOfScalar) {
             $this->listOfScalar = array();
-            foreach ($this->vars as $k => $v) {
-                if (\is_scalar($v)) {
-                    $this->listOfScalar[$k] = $v;
+            if ($this->checkTrust(null)) {
+                foreach ($this->vars as $k => $v) {
+                    if (\is_scalar($v)) {
+                        $this->listOfScalar[$k] = $v;
+                    }
                 }
             }
         }
         return $this->listOfScalar;
+    }
+
+    /**
+     * @param mixed $ex
+     * @return boolean
+     */
+    private function checkTrust($ex)
+    {
+        if ($ex === null) {
+            $ex = $this->ex;
+        }
+        if (!$ex) {
+            return true;
+        }
+        return $this->trusted;
     }
 
     /**

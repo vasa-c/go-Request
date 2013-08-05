@@ -459,4 +459,64 @@ class StorageTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals($expected, $storage->loadListForms('list', $settings));
     }
+
+    /**
+     * @covers go\Request\HTTP\Storage::exists
+     */
+    public function testExAndTrustedExists()
+    {
+        $vars = array(
+            'x' => '1',
+        );
+        $storageFT = new Storage($vars, false, true);
+        $storageTT = new Storage($vars, true, true);
+        $storageFF = new Storage($vars, false, false);
+        $storageTF = new Storage($vars, true, false);
+
+        $this->assertTrue($storageFT->exists('x'));
+        $this->assertTrue($storageTT->exists('x'));
+        $this->assertTrue($storageFF->exists('x'));
+        $this->assertFalse($storageTF->exists('x'));
+        $this->assertFalse($storageFF->exists('x', null, true));
+        $this->assertTrue($storageTF->exists('x', null, false));
+        $storageTF->setTrust(true);
+        $this->assertTrue($storageTF->exists('x'));
+    }
+
+    /**
+     * @covers go\Request\HTTP\Storage::exists
+     */
+    public function testExAndTrustedAll()
+    {
+        $vars = array(
+            'x' => '1',
+        );
+        $storage = new Storage($vars, true, false);
+        $this->assertFalse($storage->exists('x'));
+        $this->assertFalse(isset($storage->x));
+        $this->assertFalse(isset($storage['x']));
+        $this->assertNull($storage->get('x'));
+        $this->assertNull($storage->getEnum('x', array('1', '2')));
+        $this->assertNull($storage->x);
+        $this->assertNull($storage['x']);
+        $a = array();
+        foreach ($storage as $k => $v) {
+            $a[$k] = $v;
+        }
+        $this->assertEmpty($a);
+        $this->assertEmpty($storage->getAllVars());
+        $this->assertEmpty($storage->getAllVars(true));
+
+        $this->assertEquals(5, $storage->get('x', null, 5));
+        $this->assertEquals('1', $storage->get('x', null, 5, false));
+        $this->assertEquals('1', $storage->getEnum('x', array('1', '2'), false));
+
+        $settings = array(
+            'fields' => array('x'),
+        );
+        $this->assertNull($storage->loadForm(null, $settings));
+        $settings['throws'] = true;
+        $this->setExpectedException('Exception');
+        $storage->loadForm(null, $settings);
+    }
 }
