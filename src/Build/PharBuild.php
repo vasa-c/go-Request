@@ -29,20 +29,20 @@ class PharBuild extends \go\Request\CLI\Task
             $this->error('File "'.$filename.'" already exists');
             return false;
         }
-        $compress = $this->options->compress;
-        if (!isset($this->compressFormats[$compress])) {
-            $this->error('Invalid compress format "'.$compress.'"');
+        $compression = $this->options->compression;
+        if (!isset($this->compressFormats[$compression])) {
+            $this->error('Invalid compress format "'.$compression.'"');
             return false;
         }
-        return $this->createPhar($filename, $this->compressFormats[$compress]);
+        return $this->createPhar($filename, $this->compressFormats[$compression]);
     }
 
     /**
      * @param string $filename
-     * @param int $compress
+     * @param int $compression
      * @return boolean
      */
-    private function createPhar($filename, $compress)
+    private function createPhar($filename, $compression)
     {
         try {
             $phar = new \Phar($filename);
@@ -54,14 +54,16 @@ class PharBuild extends \go\Request\CLI\Task
             $this->error('Phar is read-only. See phar.readonly in php.ini');
             return false;
         }
-        if (!$phar->canCompress($compress)) {
-            $this->error('Compression is not available');
-            return false;
+        if ($compression !== \Phar::NONE) {
+            if (!$phar->canCompress($compression)) {
+                $this->error('Compression is not available');
+                return false;
+            }
         }
         try {
             @$phar->buildFromDirectory(__DIR__.'/../');
-            if ($compress !== \Phar::NONE) {
-                $phar->compressFiles($compress);
+            if ($compression !== \Phar::NONE) {
+                $phar->compressFiles($compression);
             }
             $phar->setDefaultStub('phar.php');
         } catch (\PharException $e) {
@@ -85,7 +87,7 @@ class PharBuild extends \go\Request\CLI\Task
                 'short' => 'f',
                 'filter' => 'Value',
             ),
-            'compress' => array(
+            'compression' => array(
                 'title' => 'compress (gz, bz, none), by default "gz"',
                 'short' => 'c',
                 'default' => 'gz',
