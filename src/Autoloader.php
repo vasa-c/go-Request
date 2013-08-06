@@ -8,6 +8,8 @@
 
 namespace go\Request;
 
+const VERSION = '1.0-beta';
+
 final class Autoloader
 {
     /**

@@ -15,15 +15,9 @@ class PharBuild extends \go\Request\CLI\Task
      */
     protected function process()
     {
-        $version = $this->stack->getNextArgument();
-        if (!$version) {
-            $this->error('Please specify a version of the library');
-            $this->error('Example: ./build.php 1.3-rc2');
-            return false;
-        }
         $filename = $this->options->filename;
         if (!$filename) {
-            $filename = 'Request-'.$version.'.phar';
+            $filename = 'Request-'.\go\Request\VERSION.'.phar';
         }
         if (\file_exists($filename)) {
             $this->error('File "'.$filename.'" already exists');
@@ -56,7 +50,7 @@ class PharBuild extends \go\Request\CLI\Task
         }
         if ($compression !== \Phar::NONE) {
             if (!$phar->canCompress($compression)) {
-                $this->error('Compression is not available');
+                $this->error('Compression is not available (use ./build.php --compression=none)');
                 return false;
             }
         }
@@ -80,7 +74,7 @@ class PharBuild extends \go\Request\CLI\Task
         'title' => 'Build phar archive',
         'version' => '1.0',
         'copyright' => 'Grigoriev Oleg aka vasa_c, 2013',
-        'usage' => './build.php [options] lib-version',
+        'usage' => './build.php [options]',
         'options' => array(
             'filename' => array(
                 'title' => 'filename of phar archive (by default phar/Request-{version})',
