@@ -82,9 +82,9 @@ class PharBuild extends \go\Request\CLI\Task
                 'filter' => 'Value',
             ),
             'compression' => array(
-                'title' => 'compress (gz, bz, none), by default "gz"',
+                'title' => 'compress (none, gz, bz)',
                 'short' => 'c',
-                'default' => 'gz',
+                'default' => 'none',
                 'filter' => 'Value',
             ),
         ),
