@@ -1,15 +1,23 @@
 <?php
 /**
- * Autoloader for go\Request classes
+ * PHP and data of request
  *
  * @package go\Request
  * @author  Grigoriev Oleg aka vasa_c <go.vasac@gmail.com>
+ * @license http://www.opensource.org/licenses/mit-license.php MIT
+ * @vestion 1.0-beta
+ * @link https://github.com/vasa-c/go-Request source
+ * @link https://github.com/vasa-c/go-Request/wiki documentation
+ * @uses PHP 5.3+
  */
 
 namespace go\Request;
 
 const VERSION = '1.0-beta';
 
+/**
+ * Autoloader for go\Request classes
+ */
 final class Autoloader
 {
     /**
