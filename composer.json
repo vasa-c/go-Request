@@ -1,0 +1,28 @@
+{
+    "name": "go/Request",
+    "description": "PHP and data of request",
+    "version": "1.0.0-beta",
+    "type": "library",
+    "keywords": ["http", "cli"],
+    "homepage": "https://github.com/vasa-c/go-Request",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Oleg Grigoriev",
+            "email": "go.vasac@gmail.com",
+            "homepage": "http://blgo.ru/blog/",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "go.vasac@gmail.com",
+        "wiki": "https://github.com/vasa-c/go-Request/wiki"
+    },
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "classmap": ["src/"]
+    }
+}
+
