@@ -138,6 +138,10 @@ class StorageTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($storage->exists('dict-tree', 'mixed'));
         $this->assertFalse($storage->exists('unk', 'mixed'));
 
+        $this->assertTrue($storage->exists('id', 'check'));
+        $this->assertTrue($storage->exists('empty', 'check'));
+        $this->assertTrue($storage->exists('unk', 'check'));
+
         $this->setExpectedException('InvalidArgumentException');
         $storage->exists('empty', 'invalid');
     }
@@ -163,6 +167,10 @@ class StorageTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(false, $storage->get('unk', 'check'));
         $this->assertSame(null, $storage->get('unk'));
         $this->assertSame('unkdef', $storage->get('unk', null, 'unkdef'));
+
+        $this->assertSame(true, $storage->get('id', 'check'));
+        $this->assertSame(true, $storage->get('empty', 'check'));
+        $this->assertSame(false, $storage->get('unk', 'check'));
 
         $this->setExpectedException('InvalidArgumentException');
         $storage->get('int', 'invalid');

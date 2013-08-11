@@ -75,6 +75,9 @@ class Storage implements \ArrayAccess, \Countable, \IteratorAggregate
         if (!$this->checkTrust($ex)) {
             return false;
         }
+        if ($type === 'check') {
+            return true;
+        }
         return Validator::exists($this->vars, $name, $type);
     }
 
