@@ -1,7 +1,7 @@
 {
     "name": "go/Request",
     "description": "PHP and data of request",
-    "version": "1.0.0-beta",
+    "version": "1.0.0-RC1",
     "type": "library",
     "keywords": ["http", "cli"],
     "homepage": "https://github.com/vasa-c/go-Request",

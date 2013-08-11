@@ -4,8 +4,9 @@
  *
  * @package go\Request
  * @author  Grigoriev Oleg aka vasa_c <go.vasac@gmail.com>
+ * @copyright (c) 2013, Grigoriev Oleg
  * @license http://www.opensource.org/licenses/mit-license.php MIT
- * @vestion 1.0-beta
+ * @version 1.0.0-RC1
  * @link https://github.com/vasa-c/go-Request source
  * @link https://github.com/vasa-c/go-Request/wiki documentation
  * @uses PHP 5.3+
@@ -13,7 +14,7 @@
 
 namespace go\Request;
 
-const VERSION = '1.0-beta';
+const VERSION = '1.0.0-RC1';
 
 /**
  * Autoloader for go\Request classes
