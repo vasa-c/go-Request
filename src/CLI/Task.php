@@ -185,6 +185,7 @@ abstract class Task
             foreach ($this->format->getHelp(null) as $message) {
                 $this->out($message);
             }
+            $this->helpSubtasks();
             return true;
         }
         if ($this->oVersion && ($this->options->__get($this->oVersion))) {
@@ -196,6 +197,38 @@ abstract class Task
             return true;
         }
         return null;
+    }
+
+    /**
+     * Display help for subtasks
+     */
+    protected function helpSubtasks()
+    {
+        if (empty($this->subtasks)) {
+            return;
+        }
+        $this->out('');
+        $this->out('Tasks:');
+        $help = array();
+        $max = 0;
+        foreach ($this->subtasks as $k => $v) {
+            $title = '';
+            if (\strpos($v, '::') !== 0) {
+                if (\class_exists($v, true)) {
+                    $ref = new \ReflectionClass($v);
+                    $props = $ref->getDefaultProperties();
+                    if (isset($props['format']['title'])) {
+                        $title = $props['format']['title'];
+                    }
+                }
+            }
+            $help[] = array($k, $title);
+            $max = \max($max, \strlen($k));
+        }
+        foreach ($help as $v) {
+            $h = $v[0].\str_repeat(' ', $max - \strlen($v[0])).' - '.$v[1];
+            $this->out('   '.$h);
+        }
     }
 
     /**
@@ -238,7 +271,7 @@ abstract class Task
     protected $options;
 
     /**
-     * Is --quiet enable
+     * Is --quiet enable?
      *
      * @var boolean
      */
