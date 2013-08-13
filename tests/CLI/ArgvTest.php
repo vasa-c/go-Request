@@ -152,7 +152,7 @@ class ArgvTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers go\Request\Argv::getStack
+     * @covers go\Request\CLI\Argv::getStack
      */
     public function testGetStack()
     {

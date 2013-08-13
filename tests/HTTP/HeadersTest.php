@@ -50,7 +50,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers go\Request\HTTP\Headers::__construct
-     * @covers go\Request\HTTP\Headers::getList
+     * @covers go\Request\HTTP\Headers::getHeader
      */
     public function testGetHeader()
     {

@@ -19,7 +19,7 @@ class CmdParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @param string $cmd
      * @param array $args
-     * @covers go\Request\CLI\Helpers\CmdParser::__constructor
+     * @covers go\Request\CLI\Helpers\CmdParser::__construct
      * @covers go\Request\CLI\Helpers\CmdParser::getArgs
      * @dataProvider providerParser
      */
