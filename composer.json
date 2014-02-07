@@ -1,5 +1,5 @@
 {
-    "name": "go/Request",
+    "name": "go/request",
     "description": "PHP and data of request",
     "type": "library",
     "keywords": ["http", "cli"],
