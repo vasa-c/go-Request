@@ -143,6 +143,15 @@ abstract class Task
         }
     }
 
+    /**
+     * For override
+     *
+     * @param array $params
+     */
+    protected function loadParams(array $params)
+    {
+    }
+
     private function createFormat()
     {
         $format = $this->format;
@@ -269,6 +278,11 @@ abstract class Task
      * @var \go\Request\CLI\Options
      */
     protected $options;
+
+    /**
+     * @var array
+     */
+    protected $params;
 
     /**
      * Is --quiet enable?
