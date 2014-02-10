@@ -17,7 +17,7 @@ abstract class Task
      * @param array $params [optional]
      * @param boolean $first [optional]
      */
-    final public function __construct(Stack $stack = null, array $params = null, $first = true)
+    public function __construct(Stack $stack = null, array $params = null, $first = true)
     {
         $this->stack = $stack ?: Stack::createFromSystem();
         if ($first) {
