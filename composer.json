@@ -24,6 +24,9 @@
         "psr-4": {
             "go\\Request\\": "src"
         }
+    },
+    "archive": {
+        "exclude": ["/tests/*", "/doc/*", "/cs.sh", "/phpmd.sh", "/*.xml.dist", "/CHANGELOG.md"]
     }
 }
 
